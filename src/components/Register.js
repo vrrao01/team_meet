@@ -10,7 +10,7 @@ import "../App.css";
 import logo from "../Logo.svg";
 import "firebase/app";
 import { auth } from "../firebase";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,6 @@ export default function Register() {
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +28,6 @@ export default function Register() {
     } else {
       try {
         await auth.createUserWithEmailAndPassword(email, password);
-        history.push("/chats");
       } catch (err) {
         console.log(err);
         if (err.code === "auth/invalid-email") {

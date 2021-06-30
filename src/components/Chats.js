@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { auth } from "../firebase";
 
 function Chats() {
   const { user } = useAuth();
