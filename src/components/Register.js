@@ -12,28 +12,38 @@ import "firebase/app";
 import { auth } from "../firebase";
 import { useHistory, Link } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setError("");
-      setDisabled(true);
-      await auth.signInWithEmailAndPassword(email, password);
-      console.log("Logged in ");
-    } catch (err) {
-      if (err.code === "auth/invalid-email") {
-        setError("Enter a valid email");
-      } else {
-        setError("Invalid credentials");
+    setError("");
+    setDisabled(true);
+    if (password2 !== password) {
+      setError("Passwords don't match");
+    } else {
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        history.push("/chats");
+      } catch (err) {
+        console.log(err);
+        if (err.code === "auth/invalid-email") {
+          setError("Enter a valid email");
+        } else if (err.code === "auth/email-already-in-use") {
+          setError("Email is already in use");
+        } else if (err.code === "auth/weak-password") {
+          setError(err.message);
+        } else {
+          setError("Could not create user. Try again");
+        }
       }
-      setDisabled(false);
     }
+    setDisabled(false);
   };
   return (
     <Container style={{ display: "flex", height: "100vh" }}>
@@ -52,7 +62,7 @@ export default function Login() {
             alt="Team meeT"
           />
           <Card.Title>
-            <h3>Sign In</h3>
+            <h3>Sign Up</h3>
           </Card.Title>
           {error && (
             <Alert className="mt-3" variant="danger">
@@ -60,7 +70,7 @@ export default function Login() {
             </Alert>
           )}
           <Form>
-            <Form.Group className="my-3" controlId="email">
+            <Form.Group className="my-3">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
@@ -68,12 +78,20 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
+            <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Re-enter password"
+                onChange={(e) => setPassword2(e.target.value)}
               />
             </Form.Group>
             <Button
@@ -86,7 +104,7 @@ export default function Login() {
             </Button>
           </Form>
           <hr />
-          Don't Have an Account? <Link to="/register">Sign Up</Link>
+          Already have an Account? <Link to="/">Log In</Link>
         </Card.Body>
       </Card>
     </Container>
