@@ -9,21 +9,19 @@ import PublicRoute from "./PublicRoute";
 
 function App() {
   return (
-    <div>
-      <Router>
-        <AuthProvider>
-          <Switch>
-            <PrivateRoute exact path="/" component={Chats} />
-            <PublicRoute
-              restricted={true}
-              path="/register"
-              component={Register}
-            />
-            <PublicRoute restricted={true} path="/" component={Login} />
-          </Switch>
-        </AuthProvider>
-      </Router>
-    </div>
+    <Router>
+      <AuthProvider>
+        <Switch>
+          <PrivateRoute exact path="/" component={Chats} />
+          <PublicRoute
+            restricted={true}
+            path="/register"
+            component={Register}
+          />
+          <PublicRoute restricted={true} path="/" component={Login} />
+        </Switch>
+      </AuthProvider>
+    </Router>
   );
 }
 
