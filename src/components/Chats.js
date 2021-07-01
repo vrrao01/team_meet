@@ -1,16 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Navbar, Container, Button } from "react-bootstrap";
+import { Navbar, Container } from "react-bootstrap";
 import whiteLogo from "../logoLineWhite.png";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import { auth } from "../firebase";
-import { ChatEngine } from "react-chat-engine";
+import "../App.css";
+import {
+  ChatEngine,
+  ChatList,
+  ChatCard,
+  NewChatForm,
+  ChatFeed,
+  ChatHeader,
+  IceBreaker,
+  MessageBubble,
+  IsTyping,
+  NewMessageForm,
+  ChatSettings,
+  ChatSettingsTop,
+  PeopleSettings,
+  PhotosSettings,
+  OptionsSettings,
+} from "react-chat-engine";
 import axios from "axios";
 
 function Chats() {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -29,7 +45,6 @@ function Chats() {
           "user-secret": user.uid,
         },
       })
-      .then(() => setLoading(false))
       .catch(() => {
         let userForm = new FormData();
         userForm.append("email", user.email);
@@ -41,20 +56,11 @@ function Chats() {
               "private-key": process.env.REACT_APP_CHAT_ENGINE_PRIVATE_KEY,
             },
           })
-          .then(() => setLoading(false))
           .catch((err) => console.log(err));
       });
   });
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "0px",
-        left: "0px",
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
+    <div className="chat-screen">
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand>
@@ -76,26 +82,60 @@ function Chats() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {loading && <h1>Loading...</h1>}
-      {!loading && (
+      <Container fluid style={{ fontFamily: "Poppins" }}>
         <ChatEngine
-          height="calc(100vh-57px)"
-          style={{ flexGrow: "100" }}
+          height="calc(100vh - 60px)"
           projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
           userName={user.email}
           userSecret={user.uid}
-          renderChatHeader={(chat) => {
-            console.log(chat);
-            if (chat)
-              return (
-                <Container className="text-center">
-                  <h4>{chat.title}</h4>
-                  <Button>Call</Button>
-                </Container>
-              );
-          }}
+          renderChatList={(chatAppState) => <ChatList {...chatAppState} />}
+          renderChatCard={(chat, index) => (
+            <ChatCard key={`${index}`} chat={chat} />
+          )}
+          renderNewChatForm={(creds) => <NewChatForm creds={creds} />}
+          renderChatFeed={(chatAppState) => <ChatFeed {...chatAppState} />}
+          renderChatHeader={(chat) => <ChatHeader />}
+          renderIceBreaker={(chat) => <IceBreaker />}
+          renderMessageBubble={(
+            creds,
+            chat,
+            lastMessage,
+            message,
+            nextMessage
+          ) => (
+            <MessageBubble
+              lastMessage={lastMessage}
+              message={message}
+              nextMessage={nextMessage}
+              chat={chat}
+            />
+          )}
+          renderSendingMessage={(
+            creds,
+            chat,
+            lastMessage,
+            message,
+            nextMessage
+          ) => (
+            <MessageBubble
+              sending={true}
+              lastMessage={lastMessage}
+              message={message}
+              nextMessage={nextMessage}
+              chat={chat}
+            />
+          )}
+          renderIsTyping={(typers) => <IsTyping />}
+          renderNewMessageForm={(creds, chatID) => <NewMessageForm />}
+          renderChatSettings={(chatAppState) => (
+            <ChatSettings {...chatAppState} />
+          )}
+          renderChatSettingsTop={(creds, chat) => <ChatSettingsTop />}
+          renderPeopleSettings={(creds, chat) => <PeopleSettings />}
+          renderPhotosSettings={(chat) => <PhotosSettings />}
+          renderOptionsSettings={(creds, chat) => <OptionsSettings />}
         />
-      )}
+      </Container>
     </div>
   );
 }
