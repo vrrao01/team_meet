@@ -6,19 +6,21 @@ import Chats from "./Chats";
 import Register from "./Register";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
+import VideoCall from "./VideoCall";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <Switch>
+          <PrivateRoute path="/video/:chatid" component={VideoCall} />
           <PrivateRoute exact path="/" component={Chats} />
           <PublicRoute
             restricted={true}
             path="/register"
             component={Register}
           />
-          <PublicRoute restricted={true} path="/" component={Login} />
+          <PublicRoute restricted={true} path="/login" component={Login} />
         </Switch>
       </AuthProvider>
     </Router>
