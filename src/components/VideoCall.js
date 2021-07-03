@@ -49,11 +49,31 @@ const VideoCall = () => {
   const raiseHand = () => {
     api.current.executeCommand("toggleRaiseHand");
   };
+  const downloadAttendance = () => {
+    let data = api.current.getParticipantsInfo();
+    let emails = ["email"];
+    data.map((obj) => {
+      if (!(obj.displayName in emails)) {
+        emails.push(obj.displayName);
+      }
+      return obj.displayName;
+    });
+    data = emails.join("\n");
+    const blob = new Blob([data], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.style = "display:none";
+    document.body.appendChild(a);
+    a.href = url;
+    a.download = "attendance.csv";
+    a.click();
+    document.body.removeChild(a);
+  };
 
   useEffect(() => {
     const domain = "beta.meet.jit.si";
     const options = {
-      roomName: `TeamMeet-${chatid}`,
+      roomName: `Team-Meet-${chatid}`,
       // width: "100%",
       // height: "100%",
       parentNode: document.querySelector("#video-call"),
@@ -130,7 +150,7 @@ const VideoCall = () => {
                   ></SvgIcon>
                   View Participants
                 </Dropdown.Item>
-                <Dropdown.Item>
+                <Dropdown.Item as="button" onClick={downloadAttendance}>
                   <SvgIcon
                     component={GetAppIcon}
                     style={{ color: "white" }}
