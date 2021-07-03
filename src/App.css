@@ -89,3 +89,9 @@
 .icon-link:hover::before {
   transform: scale(1);
 }
+
+.btn-check:focus + .btn,
+.btn:focus {
+  outline: 0;
+  box-shadow: none;
+}

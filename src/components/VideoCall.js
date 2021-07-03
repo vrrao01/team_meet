@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Navbar, Container } from "react-bootstrap";
+import { Navbar, Container, Dropdown } from "react-bootstrap";
 import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
 import VideocamIcon from "@material-ui/icons/Videocam";
@@ -13,6 +13,10 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 import PanToolIcon from "@material-ui/icons/PanTool";
 import ChatIcon from "@material-ui/icons/Chat";
 import CallEndIcon from "@material-ui/icons/CallEnd";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import GetAppIcon from "@material-ui/icons/GetApp";
+import PeopleIcon from "@material-ui/icons/People";
 import "../App.css";
 
 const VideoCall = () => {
@@ -95,11 +99,52 @@ const VideoCall = () => {
       {!loading && (
         <Navbar bg="dark" variant="dark">
           <Container style={{ justifyContent: "center" }}>
-            <button className="icon-link " onClick={() => {}}>
+            <Dropdown>
+              <Dropdown.Toggle
+                id="dropdown-button-dark-example1"
+                className="icon-link"
+                variant=""
+              >
+                <SvgIcon
+                  component={MoreHorizIcon}
+                  style={{ color: "white" }}
+                ></SvgIcon>
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="dropdown-menu-dark">
+                <Dropdown.Item
+                  as="button"
+                  onClick={() =>
+                    api.current.executeCommand("toggleVirtualBackgroundDialog")
+                  }
+                >
+                  <SvgIcon
+                    component={AccountBoxIcon}
+                    style={{ color: "white" }}
+                  ></SvgIcon>
+                  Virtual Background
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <SvgIcon
+                    component={PeopleIcon}
+                    style={{ color: "white" }}
+                  ></SvgIcon>
+                  View Participants
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <SvgIcon
+                    component={GetAppIcon}
+                    style={{ color: "white" }}
+                  ></SvgIcon>
+                  Download Attendance List
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item>Separated link</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <button className="icon-link " onClick={muteHandler}>
               <SvgIcon
                 component={micIcon ? MicIcon : MicOffIcon}
                 style={{ color: "white" }}
-                onClick={muteHandler}
               ></SvgIcon>
             </button>
             <button className="icon-link " onClick={() => {}}>
@@ -141,6 +186,7 @@ const VideoCall = () => {
                 borderRadius: "50px",
                 border: "none",
               }}
+              className="icon-link"
               onClick={() => window.close()}
             >
               <SvgIcon
