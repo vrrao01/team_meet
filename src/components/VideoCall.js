@@ -18,6 +18,7 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PeopleIcon from "@material-ui/icons/People";
 import "../App.css";
+import ParticipantsModal from "./Participants";
 
 const VideoCall = () => {
   const api = useRef();
@@ -30,6 +31,8 @@ const VideoCall = () => {
   const [videoIcon, setVideoIcon] = useState(false);
   const [screenShareIcon, setScreenShareIcon] = useState(false);
   const [handRaised, setHandRaised] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [participantsList, setParticipantsList] = useState([]);
   // Event Handlers
   const onLoad = async () => {
     api.current.executeCommand("subject", "New Title");
@@ -69,7 +72,16 @@ const VideoCall = () => {
     a.click();
     document.body.removeChild(a);
   };
-
+  const kickParticipant = (id) => {
+    api.current.executeCommand("kickParticipant", id);
+  };
+  const pinParticipant = (id) => {
+    api.current.pinParticipant(id);
+  };
+  const participantEventListener = () => {
+    console.log("trigged listerener for part");
+    setParticipantsList(api.current.getParticipantsInfo());
+  };
   useEffect(() => {
     const domain = "beta.meet.jit.si";
     const options = {
@@ -87,9 +99,14 @@ const VideoCall = () => {
         enableWelcomePage: false,
         prejoinPageEnabled: false,
         disableRemoteMute: false,
-        // remoteVideoMenu: {
-        //     disableKick: true
-        // },
+        remoteVideoMenu: {
+          disableKick: true,
+        },
+        hideParticipantsStats: false,
+        disableShowMoreStats: true,
+        enableSaveLogs: false,
+        disableLocalVideoFlip: true,
+        enableDisplayNameInStats: false,
         // notifications: ["notify.disconnected", "notify.raisedHand"],
       },
       interfaceConfigOverwrite: {
@@ -113,6 +130,9 @@ const VideoCall = () => {
         setHandRaised(e.handRaised);
       }
     });
+    api.current.addListener("participantJoined", participantEventListener);
+    api.current.addListener("participantKickedOut", participantEventListener);
+    api.current.addListener("participantLeft", participantEventListener);
   }, [chatid, user.email]);
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -143,7 +163,13 @@ const VideoCall = () => {
                   ></SvgIcon>
                   Virtual Background
                 </Dropdown.Item>
-                <Dropdown.Item>
+                <Dropdown.Item
+                  as="button"
+                  onClick={() => {
+                    setParticipantsList(api.current.getParticipantsInfo());
+                    setShowParticipants(true);
+                  }}
+                >
                   <SvgIcon
                     component={PeopleIcon}
                     style={{ color: "white" }}
@@ -157,8 +183,6 @@ const VideoCall = () => {
                   ></SvgIcon>
                   Download Attendance List
                 </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item>Separated link</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <button className="icon-link " onClick={muteHandler}>
@@ -225,6 +249,13 @@ const VideoCall = () => {
           flexGrow: "1",
           paddingBottom: "10px",
         }}
+      />
+      <ParticipantsModal
+        show={showParticipants}
+        onHide={() => setShowParticipants(false)}
+        kickParticipant={kickParticipant}
+        pinParticipant={pinParticipant}
+        participantsList={participantsList}
       />
       {loading && <h1>Loading...</h1>}
     </div>

@@ -21,7 +21,6 @@ function Chats() {
       console.log(err);
     }
   };
-  console.log(process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID);
   useEffect(() => {
     axios
       .get("https://api.chatengine.io/users/me", {
