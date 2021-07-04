@@ -86,7 +86,7 @@ const VideoCall = () => {
         startWithAudioMuted: true,
         enableWelcomePage: false,
         prejoinPageEnabled: false,
-        // disableRemoteMute: true,
+        disableRemoteMute: false,
         // remoteVideoMenu: {
         //     disableKick: true
         // },

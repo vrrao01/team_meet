@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap");
+
 .animated-body {
   animation: slide 3s ease-in-out infinite alternate;
   background-image: linear-gradient(60deg, #464eb8 50%, #7b83eb 50%);
@@ -94,4 +96,107 @@
 .btn:focus {
   outline: 0;
   box-shadow: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: darkgrey;
+}
+
+.my-font {
+  font-family: Rubik !important;
+}
+
+.chat-card-last-message {
+  font-size: 0.9em;
+  overflow-wrap: normal;
+  overflow: hidden;
+  color: gray;
+  white-space: nowrap;
+  margin-left: 3px;
+}
+
+.chat-card-date {
+  font-size: 0.9em;
+  text-align: center;
+  color: gray;
+}
+.chat-card {
+  border-radius: 15px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  /* transition: background-color 1s ease-out; */
+}
+
+.chat-card:hover {
+  background-color: #6c71bd;
+  border-radius: 15px;
+  color: white;
+}
+
+.chat-card-active:hover {
+  background-color: #464eb8;
+  border-radius: 15px;
+  color: white;
+}
+
+.chat-card:hover .chat-card-date {
+  color: white;
+}
+
+.chat-card:hover #chat-card-unread-symbol {
+  color: white !important;
+}
+
+.chat-card:hover .chat-card-last-message {
+  color: white;
+}
+
+#new-chat-plus-button {
+  background-color: #464eb8 !important;
+}
+
+.ce-chat-form-container {
+  font-family: Rubik;
+}
+
+.chat-card-active {
+  background-color: #464eb8;
+  color: white;
+}
+
+.chat-card-date-active {
+  color: white;
+}
+.chat-card-last-message-active {
+  font-size: 0.9em;
+  color: white;
+}
+
+.ce-my-message-bubble {
+  background-color: #767bbe !important ;
+}
+
+.ce-settings {
+  font-family: Rubik !important ;
+}
+
+.video-call-button {
+  background-color: #464eb8;
+  border-radius: 15px;
+}
+
+#ce-send-message-button {
+  background-color: #464eb8 !important;
 }
