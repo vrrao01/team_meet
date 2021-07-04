@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Navbar, Container, Dropdown } from "react-bootstrap";
+import Navbar from "react-bootstrap/Navbar";
+import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
+import Dropdown from "react-bootstrap/Dropdown";
 import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
 import VideocamIcon from "@material-ui/icons/Videocam";
@@ -17,8 +20,8 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PeopleIcon from "@material-ui/icons/People";
-import "../App.css";
 import ParticipantsModal from "./Participants";
+import axios from "axios";
 
 const VideoCall = () => {
   const api = useRef();
@@ -33,9 +36,11 @@ const VideoCall = () => {
   const [handRaised, setHandRaised] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
   const [participantsList, setParticipantsList] = useState([]);
+  const [error, setError] = useState("");
+
   // Event Handlers
-  const onLoad = async () => {
-    api.current.executeCommand("subject", "New Title");
+  const onLoad = async (title) => {
+    api.current.executeCommand("subject", title);
     setMicIcon(!(await api.current.isAudioMuted()));
     setVideoIcon(!(await api.current.isVideoMuted()));
     setLoading(false);
@@ -79,64 +84,114 @@ const VideoCall = () => {
     api.current.pinParticipant(id);
   };
   const participantEventListener = () => {
-    console.log("trigged listerener for part");
     setParticipantsList(api.current.getParticipantsInfo());
   };
   useEffect(() => {
-    const domain = "beta.meet.jit.si";
-    const options = {
-      roomName: `Team-Meet-${chatid}`,
-      // width: "100%",
-      // height: "100%",
-      parentNode: document.querySelector("#video-call"),
-      userInfo: {
-        displayName: user.email,
+    // Variables to help authenticate user
+    var myChats = [];
+    var myChatIDs = [];
+    var userBelongsInChat = false;
+    var title = "Meeting";
+
+    // Check if user belongs in current meeting group
+    var config = {
+      method: "get",
+      url: "https://api.chatengine.io/chats/",
+      headers: {
+        "Project-ID": process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID,
+        "User-Name": user.email,
+        "User-Secret": user.uid,
       },
-      configOverwrite: {
-        doNotStoreRoom: true,
-        startWithVideoMuted: true,
-        startWithAudioMuted: true,
-        enableWelcomePage: false,
-        prejoinPageEnabled: false,
-        disableRemoteMute: false,
-        remoteVideoMenu: {
-          disableKick: true,
-        },
-        hideParticipantsStats: false,
-        disableShowMoreStats: true,
-        enableSaveLogs: false,
-        disableLocalVideoFlip: true,
-        enableDisplayNameInStats: false,
-        // notifications: ["notify.disconnected", "notify.raisedHand"],
-      },
-      interfaceConfigOverwrite: {
-        APP_NAME: "Team Meet",
-        TOOLBAR_BUTTONS: [],
-      },
-      onload: onLoad,
     };
-    api.current = new window.JitsiMeetExternalAPI(domain, options);
-    api.current.addListener("audioMuteStatusChanged", (e) => {
-      setMicIcon(!e.muted);
-    });
-    api.current.addListener("videoMuteStatusChanged", (e) => {
-      setVideoIcon(!e.muted);
-    });
-    api.current.addListener("screenSharingStatusChanged", (e) => {
-      setScreenShareIcon(e.on);
-    });
-    api.current.addListener("raiseHandUpdated", (e) => {
-      if (api.current._myUserID === e.id) {
-        setHandRaised(e.handRaised);
-      }
-    });
-    api.current.addListener("participantJoined", participantEventListener);
-    api.current.addListener("participantKickedOut", participantEventListener);
-    api.current.addListener("participantLeft", participantEventListener);
-  }, [chatid, user.email]);
+    axios(config)
+      .then((response) => {
+        myChats = response.data;
+        myChatIDs = myChats.map((obj) => obj.id);
+        console.log("Mychats = ", myChats);
+        console.log("mychatids =", myChatIDs);
+        for (const idx in myChatIDs) {
+          if (myChatIDs[idx] === Number.parseInt(chatid)) {
+            userBelongsInChat = true;
+            title = `${myChats[idx].title}`;
+          }
+        }
+
+        if (userBelongsInChat) {
+          const domain = "beta.meet.jit.si";
+          const options = {
+            roomName: `Team-Meet-${chatid}`,
+            // width: "100%",
+            // height: "100%",
+            parentNode: document.querySelector("#video-call"),
+            userInfo: {
+              displayName: user.email,
+            },
+            configOverwrite: {
+              doNotStoreRoom: true,
+              startWithVideoMuted: true,
+              startWithAudioMuted: true,
+              enableWelcomePage: false,
+              prejoinPageEnabled: false,
+              disableRemoteMute: false,
+              remoteVideoMenu: {
+                disableKick: true,
+              },
+              hideParticipantsStats: false,
+              disableShowMoreStats: true,
+              enableSaveLogs: false,
+              disableLocalVideoFlip: true,
+              enableDisplayNameInStats: false,
+              // notifications: ["notify.disconnected", "notify.raisedHand"],
+            },
+            interfaceConfigOverwrite: {
+              APP_NAME: "Team Meet",
+              TOOLBAR_BUTTONS: [],
+            },
+            onload: () => onLoad(title),
+          };
+          api.current = new window.JitsiMeetExternalAPI(domain, options);
+          api.current.addListener("audioMuteStatusChanged", (e) => {
+            setMicIcon(!e.muted);
+          });
+          api.current.addListener("videoMuteStatusChanged", (e) => {
+            setVideoIcon(!e.muted);
+          });
+          api.current.addListener("screenSharingStatusChanged", (e) => {
+            setScreenShareIcon(e.on);
+          });
+          api.current.addListener("raiseHandUpdated", (e) => {
+            if (api.current._myUserID === e.id) {
+              setHandRaised(e.handRaised);
+            }
+          });
+          api.current.addListener(
+            "participantJoined",
+            participantEventListener
+          );
+          api.current.addListener(
+            "participantKickedOut",
+            participantEventListener
+          );
+          api.current.addListener("participantLeft", participantEventListener);
+        } else {
+          setError("Sorry! Couldn't determine if you belong in this meeting.");
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setError("Sorry! Couldn't determine if you belong in this meeting.");
+        setLoading(false);
+      });
+  }, [chatid, user]);
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      {!loading && (
+      {error && (
+        <Container className="mt-5 pt-5">
+          <Alert variant="danger">{error}</Alert>
+        </Container>
+      )}
+      {!error && !loading && (
         <Navbar bg="dark" variant="dark">
           <Container style={{ justifyContent: "center" }}>
             <Dropdown>
