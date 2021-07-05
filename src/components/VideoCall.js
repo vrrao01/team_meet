@@ -22,6 +22,7 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import PeopleIcon from "@material-ui/icons/People";
 import ParticipantsModal from "./Participants";
 import axios from "axios";
+import VideoCallChat from "./VideoCallChat";
 
 const VideoCall = () => {
   const api = useRef();
@@ -37,6 +38,7 @@ const VideoCall = () => {
   const [showParticipants, setShowParticipants] = useState(false);
   const [participantsList, setParticipantsList] = useState([]);
   const [error, setError] = useState("");
+  const [showChats, setShowChats] = useState(false);
 
   // Event Handlers
   const onLoad = async (title) => {
@@ -146,6 +148,7 @@ const VideoCall = () => {
             interfaceConfigOverwrite: {
               APP_NAME: "Team Meet",
               TOOLBAR_BUTTONS: [],
+              DEFAULT_BACKGROUND: "#c3c3c7",
             },
             onload: () => onLoad(title),
           };
@@ -270,7 +273,7 @@ const VideoCall = () => {
             </button>
             <button
               className="icon-link "
-              onClick={() => api.current.executeCommand("toggleChat")}
+              onClick={() => setShowChats(!showChats)}
             >
               <SvgIcon
                 component={ChatIcon}
@@ -297,20 +300,37 @@ const VideoCall = () => {
         </Navbar>
       )}
       <div
-        id="video-call"
         style={{
-          display: loading ? "none" : "block",
+          display: loading ? "none" : "flex",
           height: "100%",
           flexGrow: "1",
           paddingBottom: "10px",
+          flexDirection: "row",
         }}
-      />
+      >
+        {showChats && (
+          <div
+            style={{
+              width: "25vw",
+              height: "85vh",
+              position: "relative",
+              marginLeft: "5px",
+              flex: "2",
+              backgroundColor: "red",
+            }}
+          >
+            <VideoCallChat email={user.email} uid={user.uid} chatid={chatid} />
+          </div>
+        )}
+        <div id="video-call" style={{ flex: 4 }}></div>
+      </div>
       <ParticipantsModal
         show={showParticipants}
         onHide={() => setShowParticipants(false)}
         kickParticipant={kickParticipant}
         pinParticipant={pinParticipant}
         participantsList={participantsList}
+        muteAll={() => api.current.executeCommand("muteEveryone")}
       />
       {loading && <h1>Loading...</h1>}
     </div>

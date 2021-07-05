@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import RoomIcon from "@material-ui/icons/Room";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import MicOffIcon from "@material-ui/icons/MicOff";
 
 const ParticipantsModal = (props) => {
   let numberedList = [];
@@ -35,7 +36,23 @@ const ParticipantsModal = (props) => {
   return (
     <Modal show={props.show} onHide={props.onHide} centered>
       <Modal.Header className="bg-dark text-light">
-        <Modal.Title>Participants</Modal.Title>
+        <Modal.Title
+          as="div"
+          className="d-flex flex-row"
+          style={{ width: "100%" }}
+        >
+          <div style={{ flex: 1 }}>Participants</div>
+          <div style={{ flex: 1 }}>
+            <button
+              className=" btn"
+              style={{ fontSize: "0.8em", backgroundColor: "lightgray" }}
+              onClick={props.muteAll}
+            >
+              <SvgIcon component={MicOffIcon}></SvgIcon>
+              Mute All
+            </button>
+          </div>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ maxHeight: "75vh", overflow: "scroll" }}>
         <div className="d-flex flex-column"> {numberedList}</div>

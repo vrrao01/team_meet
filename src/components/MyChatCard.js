@@ -66,6 +66,7 @@ const MyChatCard = (props) => {
               "chat-card-last-message " +
               (activeChat === chat.id ? "chat-card-last-message-active" : "")
             }
+            style={{ flex: "8" }}
           >
             {htmlToText(chat.last_message.text)}
           </div>
@@ -74,6 +75,7 @@ const MyChatCard = (props) => {
               "chat-card-date " +
               (activeChat === chat.id ? "chat-card-date-active" : "")
             }
+            style={{ flex: "2" }}
           >
             {daySinceSent(chat.last_message.created)}
           </div>

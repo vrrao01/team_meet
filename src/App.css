@@ -123,12 +123,15 @@
   color: gray;
   white-space: nowrap;
   margin-left: 3px;
+  flex: 8;
 }
 
 .chat-card-date {
   font-size: 0.9em;
   text-align: center;
   color: gray;
+  flex: 2;
+  font-weight: lighter;
 }
 .chat-card {
   border-radius: 15px;
