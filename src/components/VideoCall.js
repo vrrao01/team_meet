@@ -330,6 +330,7 @@ const VideoCall = () => {
         kickParticipant={kickParticipant}
         pinParticipant={pinParticipant}
         participantsList={participantsList}
+        muteAll={() => api.current.executeCommand("muteEveryone")}
       />
       {loading && <h1>Loading...</h1>}
     </div>
