@@ -28,6 +28,7 @@ const VideoCall = () => {
   const api = useRef();
   const { chatid } = useParams();
   const { user } = useAuth();
+  var isAdmin = useRef(false);
 
   // State variables
   const [loading, setLoading] = useState(true);
@@ -109,15 +110,16 @@ const VideoCall = () => {
       .then((response) => {
         myChats = response.data;
         myChatIDs = myChats.map((obj) => obj.id);
-        console.log("Mychats = ", myChats);
-        console.log("mychatids =", myChatIDs);
+        // console.log("Mychats = ", myChats);
+        // console.log("mychatids =", myChatIDs);
         for (const idx in myChatIDs) {
           if (myChatIDs[idx] === Number.parseInt(chatid)) {
             userBelongsInChat = true;
             title = `${myChats[idx].title}`;
+            if (myChats[idx].admin.username === user.email)
+              isAdmin.current = true;
           }
         }
-
         if (userBelongsInChat) {
           const domain = "beta.meet.jit.si";
           const options = {
@@ -331,6 +333,7 @@ const VideoCall = () => {
         pinParticipant={pinParticipant}
         participantsList={participantsList}
         muteAll={() => api.current.executeCommand("muteEveryone")}
+        isAdmin={isAdmin.current}
       />
       {loading && <h1>Loading...</h1>}
     </div>

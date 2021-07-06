@@ -11,7 +11,6 @@ import logo from "../Logo.svg";
 import firebase from "firebase/app";
 import { auth } from "../firebase";
 import { Link } from "react-router-dom";
-import { GoogleOutlined } from "@ant-design/icons";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -116,6 +115,7 @@ export default function Login() {
           >
             <div>
               <img
+                alt="Google Logo"
                 src="https://cdn.iconscout.com/icon/free/png-256/google-152-189813.png"
                 style={{ maxWidth: "25px" }}
               />
