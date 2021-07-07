@@ -190,7 +190,13 @@ const VideoCall = () => {
       });
   }, [chatid, user]);
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {error && (
         <Container className="mt-5 pt-5">
           <Alert variant="danger">{error}</Alert>
@@ -335,7 +341,15 @@ const VideoCall = () => {
         muteAll={() => api.current.executeCommand("muteEveryone")}
         isAdmin={isAdmin.current}
       />
-      {loading && <h1>Loading...</h1>}
+      {loading && (
+        <center>
+          <div class="lds-facebook">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </center>
+      )}
     </div>
   );
 };
