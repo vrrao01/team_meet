@@ -261,3 +261,23 @@
 .poll-option-select {
   background-color: #b1b4e2;
 }
+
+.download-result-button {
+  background-color: #464eb8 !important;
+  color: white !important;
+}
+
+.option-tile {
+  flex: 1;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: #b1b4e2;
+  border-radius: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.option-tile-title {
+  font-weight: bold;
+  font-size: 1.2em;
+}

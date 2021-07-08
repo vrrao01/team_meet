@@ -27,6 +27,8 @@ import PollAdmin from "./PollAdmin";
 import AnswerPoll from "./AnswerPoll";
 import { db } from "../firebase";
 import { getQuestionsDoc } from "../modules/database";
+import { downloadAttendance } from "../modules/csv";
+import PollIcon from "@material-ui/icons/Poll";
 
 const VideoCall = () => {
   const api = useRef();
@@ -66,26 +68,6 @@ const VideoCall = () => {
   };
   const raiseHand = () => {
     api.current.executeCommand("toggleRaiseHand");
-  };
-  const downloadAttendance = () => {
-    let data = api.current.getParticipantsInfo();
-    let emails = ["email"];
-    data.map((obj) => {
-      if (!(obj.displayName in emails)) {
-        emails.push(obj.displayName);
-      }
-      return obj.displayName;
-    });
-    data = emails.join("\n");
-    const blob = new Blob([data], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    let a = document.createElement("a");
-    a.style = "display:none";
-    document.body.appendChild(a);
-    a.href = url;
-    a.download = "attendance.csv";
-    a.click();
-    document.body.removeChild(a);
   };
   const kickParticipant = (id) => {
     api.current.executeCommand("kickParticipant", id);
@@ -257,13 +239,32 @@ const VideoCall = () => {
                   ></SvgIcon>
                   View Participants
                 </Dropdown.Item>
-                <Dropdown.Item as="button" onClick={downloadAttendance}>
-                  <SvgIcon
-                    component={GetAppIcon}
-                    style={{ color: "white" }}
-                  ></SvgIcon>
-                  Download Attendance List
-                </Dropdown.Item>
+                {isAdmin.current && (
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => {
+                      downloadAttendance(api.current.getParticipantsInfo());
+                    }}
+                  >
+                    <SvgIcon
+                      component={GetAppIcon}
+                      style={{ color: "white" }}
+                    ></SvgIcon>
+                    Download Attendance List
+                  </Dropdown.Item>
+                )}
+                {isAdmin.current && (
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => setShowAdminPoll(true)}
+                  >
+                    <SvgIcon
+                      component={PollIcon}
+                      style={{ color: "white" }}
+                    ></SvgIcon>
+                    Create Poll
+                  </Dropdown.Item>
+                )}
               </Dropdown.Menu>
             </Dropdown>
             <button className="icon-link " onClick={muteHandler}>
@@ -288,10 +289,7 @@ const VideoCall = () => {
                 onClick={screenShareHandler}
               ></SvgIcon>
             </button>
-            <button
-              className="icon-link "
-              onClick={() => setShowAdminPoll(true)}
-            >
+            <button className="icon-link " onClick={raiseHand}>
               <SvgIcon
                 component={PanToolIcon}
                 style={{ color: handRaised ? "yellow" : "white" }}
@@ -350,15 +348,16 @@ const VideoCall = () => {
         )}
         <div id="video-call" style={{ flex: 4 }}></div>
       </div>
-      <ParticipantsModal
-        show={showParticipants}
-        onHide={() => setShowParticipants(false)}
-        kickParticipant={kickParticipant}
-        pinParticipant={pinParticipant}
-        participantsList={participantsList}
-        muteAll={() => api.current.executeCommand("muteEveryone")}
-        isAdmin={isAdmin.current}
-      />
+      {showParticipants && (
+        <ParticipantsModal
+          onHide={() => setShowParticipants(false)}
+          kickParticipant={kickParticipant}
+          pinParticipant={pinParticipant}
+          participantsList={participantsList}
+          muteAll={() => api.current.executeCommand("muteEveryone")}
+          isAdmin={isAdmin.current}
+        />
+      )}
       {loading && (
         <center>
           <div class="lds-facebook">

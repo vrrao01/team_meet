@@ -1,21 +1,59 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../firebase";
+import { Container } from "react-bootstrap";
 
 const PollResults = (props) => {
+  const [stats, setStats] = useState([]);
+
   useEffect(() => {
-    console.log("poll results props =", props);
-    db.collection(props.chatid)
+    let unsubscribe = db
+      .collection(props.chatid)
       .doc("Poll")
       .collection("Answer")
       .where("question", "==", props.question)
       .onSnapshot((qs) => {
+        let answerStats = [];
         qs.forEach((doc) => {
-          console.log("qs doc = ", doc.data());
+          let data = doc.data();
+          answerStats.push({ email: doc.id, option: data.option });
+          setStats(answerStats);
         });
+        console.log("Answer stats = ", answerStats);
       });
-  });
-  return <div></div>;
+    return unsubscribe;
+  }, [props]);
+  return (
+    <div>
+      <Container>
+        <div className="d-flex flex-row">
+          <div className="option-tile d-flex flex-column">
+            <div className="option-tile-title">Option 1</div>
+            <div>{stats.filter((o) => o.option === 1).length}</div>
+          </div>
+          <div className="option-tile d-flex flex-column">
+            <div className="option-tile-title">Option 2</div>
+            <div>{stats.filter((o) => o.option === 2).length}</div>
+          </div>
+        </div>
+        <div className="d-flex flex-row">
+          <div className="option-tile d-flex flex-column">
+            <div className="option-tile-title">Option 3</div>
+            <div>{stats.filter((o) => o.option === 3).length}</div>
+          </div>
+          <div className="option-tile d-flex flex-column">
+            <div className="option-tile-title">Option 4</div>
+            <div>{stats.filter((o) => o.option === 4).length}</div>
+          </div>
+        </div>
+        <div className="text-center">
+          <button className="btn download-result-button">
+            Download Detailed Results
+          </button>
+        </div>
+      </Container>
+    </div>
+  );
 };
 
 export default PollResults;

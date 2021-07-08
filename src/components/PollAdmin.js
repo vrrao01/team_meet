@@ -1,7 +1,7 @@
 import React, { createRef, useState } from "react";
 import { useEffect } from "react";
 import { Modal, Button, Row, Col, Container, Form } from "react-bootstrap";
-import { setQuestion } from "../modules/database";
+import { getQuestionsDoc, setQuestion } from "../modules/database";
 import { db } from "../firebase";
 import PollResults from "./PollResults";
 
@@ -14,7 +14,6 @@ const PollAdmin = (props) => {
   const option3 = createRef();
   const option4 = createRef();
   const [result, setResult] = useState(false);
-  const [endPoll, setEndPoll] = useState(false);
   const [questionDetails, setQuestionDetails] = useState({});
 
   useEffect(() => {
@@ -40,6 +39,11 @@ const PollAdmin = (props) => {
     setResult(true);
   };
 
+  const handleEndPoll = () => {
+    getQuestionsDoc(db, props.chatid).update({ Valid: false });
+    props.handleClose();
+  };
+
   return (
     <Modal
       show={true}
@@ -48,7 +52,7 @@ const PollAdmin = (props) => {
       keyboard={false}
     >
       <Modal.Header className="bg-dark text-light">
-        <Modal.Title>Create Poll</Modal.Title>
+        <Modal.Title>{result ? "Poll Results" : "Create Poll"}</Modal.Title>
       </Modal.Header>
       {!result && (
         <div>
@@ -102,9 +106,6 @@ const PollAdmin = (props) => {
             </Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleClose}>
-              Close
-            </Button>
             <Button variant="primary" onClick={submitQuestion}>
               Submit Question
             </Button>
@@ -112,10 +113,19 @@ const PollAdmin = (props) => {
         </div>
       )}
       {result && (
-        <PollResults
-          chatid={props.chatid}
-          question={questionDetails["Question"]}
-        />
+        <div>
+          <Modal.Body>
+            <PollResults
+              chatid={props.chatid}
+              question={questionDetails["Question"]}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleEndPoll}>
+              End Poll
+            </Button>
+          </Modal.Footer>
+        </div>
       )}
     </Modal>
   );

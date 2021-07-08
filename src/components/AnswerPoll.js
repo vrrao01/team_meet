@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Row, Col, Container, Form } from "react-bootstrap";
+import { Modal, Button, Row, Container } from "react-bootstrap";
 import { setAnswer } from "../modules/database";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
