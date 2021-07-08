@@ -6,7 +6,7 @@ import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 import MicOffIcon from "@material-ui/icons/MicOff";
 
 const ParticipantsModal = (props) => {
-  console.log("props = ", props);
+  console.log("participant props = ", props);
   let numberedList = [];
   numberedList = props.participantsList.map((part) => (
     <div
@@ -37,7 +37,7 @@ const ParticipantsModal = (props) => {
     </div>
   ));
   return (
-    <Modal show={props.show} onHide={props.onHide} centered>
+    <Modal show={true} onHide={props.onHide} centered>
       <Modal.Header className="bg-dark text-light">
         <Modal.Title
           as="div"
