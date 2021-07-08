@@ -1,11 +1,13 @@
 import React, { createRef, useState } from "react";
-import { useEffect } from "react";
-import { Modal, Button, Row, Col, Container, Form } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import { getQuestionsDoc, setQuestion } from "../modules/database";
 import { db } from "../firebase";
 import PollResults from "./PollResults";
-
-var count = 0;
 
 const PollAdmin = (props) => {
   const question = createRef();
@@ -15,15 +17,7 @@ const PollAdmin = (props) => {
   const option4 = createRef();
   const [result, setResult] = useState(false);
   const [questionDetails, setQuestionDetails] = useState({});
-
-  useEffect(() => {
-    count = count + 1;
-    console.log("count+ = ", count);
-    return () => {
-      count = count - 1;
-      console.log("count -= ", count);
-    };
-  }, []);
+  const [options, setOptions] = useState([]);
 
   const submitQuestion = () => {
     let q = {
@@ -34,6 +28,8 @@ const PollAdmin = (props) => {
       Option3: option3.current.value,
       Option4: option4.current.value,
     };
+    let options = [q.Option1, q.Option2, q.Option3, q.Option4];
+    setOptions(options);
     setQuestionDetails(q);
     setQuestion(db, props.chatid, q);
     setResult(true);
@@ -118,6 +114,7 @@ const PollAdmin = (props) => {
             <PollResults
               chatid={props.chatid}
               question={questionDetails["Question"]}
+              options={options}
             />
           </Modal.Body>
           <Modal.Footer>

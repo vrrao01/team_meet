@@ -1,7 +1,7 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { Container } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import { downloadResults } from "../modules/csv";
 
 const PollResults = (props) => {
   const [stats, setStats] = useState([]);
@@ -17,9 +17,8 @@ const PollResults = (props) => {
         qs.forEach((doc) => {
           let data = doc.data();
           answerStats.push({ email: doc.id, option: data.option });
-          setStats(answerStats);
         });
-        console.log("Answer stats = ", answerStats);
+        setStats(answerStats);
       });
     return unsubscribe;
   }, [props]);
@@ -47,7 +46,12 @@ const PollResults = (props) => {
           </div>
         </div>
         <div className="text-center">
-          <button className="btn download-result-button">
+          <button
+            className="btn download-result-button"
+            onClick={() =>
+              downloadResults(stats, props.options, props.question)
+            }
+          >
             Download Detailed Results
           </button>
         </div>

@@ -18,4 +18,22 @@ const downloadAttendance = (data) => {
   document.body.removeChild(a);
 };
 
-export { downloadAttendance };
+const downloadResults = (data, options, question) => {
+  let formattedData = data.map(
+    (obj) => `${obj.email},${options[obj.option - 1]}`
+  );
+  let csvRows = ["email,option"];
+  formattedData.forEach((item) => csvRows.push(item));
+  formattedData = csvRows.join("\n");
+  const blob = new Blob([formattedData], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  let a = document.createElement("a");
+  a.style = "display:none";
+  a.href = url;
+  document.body.appendChild(a);
+  a.download = `${question}_result.csv`;
+  a.click();
+  document.body.removeChild(a);
+};
+
+export { downloadAttendance, downloadResults };
