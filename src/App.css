@@ -246,3 +246,18 @@
     height: 32px;
   }
 }
+
+.poll-option {
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.poll-option:hover {
+  background-color: #b1b4e2;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.poll-option-select {
+  background-color: #b1b4e2;
+}

@@ -23,12 +23,17 @@ import PeopleIcon from "@material-ui/icons/People";
 import ParticipantsModal from "./Participants";
 import axios from "axios";
 import VideoCallChat from "./VideoCallChat";
+import PollAdmin from "./PollAdmin";
+import AnswerPoll from "./AnswerPoll";
+import { db } from "../firebase";
+import { getQuestionsDoc } from "../modules/database";
 
 const VideoCall = () => {
   const api = useRef();
   const { chatid } = useParams();
   const { user } = useAuth();
   var isAdmin = useRef(false);
+  var poll = useRef();
 
   // State variables
   const [loading, setLoading] = useState(true);
@@ -41,6 +46,8 @@ const VideoCall = () => {
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
 
+  const [showAdminPoll, setShowAdminPoll] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
   // Event Handlers
   const onLoad = async (title) => {
     api.current.executeCommand("subject", title);
@@ -121,7 +128,7 @@ const VideoCall = () => {
           }
         }
         if (userBelongsInChat) {
-          const domain = "beta.meet.jit.si";
+          const domain = "meet.jit.si";
           const options = {
             roomName: `Team-Meet-${chatid}`,
             // width: "100%",
@@ -135,6 +142,7 @@ const VideoCall = () => {
               startWithVideoMuted: true,
               startWithAudioMuted: true,
               enableWelcomePage: false,
+              apiLogLevels: [],
               prejoinPageEnabled: false,
               disableRemoteMute: false,
               remoteVideoMenu: {
@@ -178,6 +186,13 @@ const VideoCall = () => {
             participantEventListener
           );
           api.current.addListener("participantLeft", participantEventListener);
+          getQuestionsDoc(db, chatid).onSnapshot((doc) => {
+            var question = doc.data();
+            if (question.Valid && !isAdmin.current) {
+              poll.current = `${question.Question}/${question.Option1}/${question.Option2}/${question.Option3}/${question.Option4}`;
+              setShowPoll(true);
+            }
+          });
         } else {
           setError("Sorry! Couldn't determine if you belong in this meeting.");
           setLoading(false);
@@ -273,7 +288,10 @@ const VideoCall = () => {
                 onClick={screenShareHandler}
               ></SvgIcon>
             </button>
-            <button className="icon-link " onClick={raiseHand}>
+            <button
+              className="icon-link "
+              onClick={() => setShowAdminPoll(true)}
+            >
               <SvgIcon
                 component={PanToolIcon}
                 style={{ color: handRaised ? "yellow" : "white" }}
@@ -349,6 +367,19 @@ const VideoCall = () => {
             <div></div>
           </div>
         </center>
+      )}
+      {isAdmin.current && showAdminPoll && (
+        <PollAdmin
+          chatid={chatid}
+          handleClose={() => setShowAdminPoll(false)}
+        />
+      )}
+      {!isAdmin.current && showPoll && (
+        <AnswerPoll
+          chatid={chatid}
+          poll={poll.current}
+          handleClose={() => setShowPoll(false)}
+        />
       )}
     </div>
   );
