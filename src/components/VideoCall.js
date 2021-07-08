@@ -23,11 +23,19 @@ import PeopleIcon from "@material-ui/icons/People";
 import ParticipantsModal from "./Participants";
 import axios from "axios";
 import VideoCallChat from "./VideoCallChat";
+import PollAdmin from "./PollAdmin";
+import AnswerPoll from "./AnswerPoll";
+import { db } from "../firebase";
+import { getQuestionsDoc } from "../modules/database";
+import { downloadAttendance } from "../modules/csv";
+import PollIcon from "@material-ui/icons/Poll";
 
 const VideoCall = () => {
   const api = useRef();
   const { chatid } = useParams();
   const { user } = useAuth();
+  var isAdmin = useRef(false);
+  var poll = useRef();
 
   // State variables
   const [loading, setLoading] = useState(true);
@@ -40,6 +48,8 @@ const VideoCall = () => {
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
 
+  const [showAdminPoll, setShowAdminPoll] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
   // Event Handlers
   const onLoad = async (title) => {
     api.current.executeCommand("subject", title);
@@ -58,26 +68,6 @@ const VideoCall = () => {
   };
   const raiseHand = () => {
     api.current.executeCommand("toggleRaiseHand");
-  };
-  const downloadAttendance = () => {
-    let data = api.current.getParticipantsInfo();
-    let emails = ["email"];
-    data.map((obj) => {
-      if (!(obj.displayName in emails)) {
-        emails.push(obj.displayName);
-      }
-      return obj.displayName;
-    });
-    data = emails.join("\n");
-    const blob = new Blob([data], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    let a = document.createElement("a");
-    a.style = "display:none";
-    document.body.appendChild(a);
-    a.href = url;
-    a.download = "attendance.csv";
-    a.click();
-    document.body.removeChild(a);
   };
   const kickParticipant = (id) => {
     api.current.executeCommand("kickParticipant", id);
@@ -109,17 +99,18 @@ const VideoCall = () => {
       .then((response) => {
         myChats = response.data;
         myChatIDs = myChats.map((obj) => obj.id);
-        console.log("Mychats = ", myChats);
-        console.log("mychatids =", myChatIDs);
+        // console.log("Mychats = ", myChats);
+        // console.log("mychatids =", myChatIDs);
         for (const idx in myChatIDs) {
           if (myChatIDs[idx] === Number.parseInt(chatid)) {
             userBelongsInChat = true;
             title = `${myChats[idx].title}`;
+            if (myChats[idx].admin.username === user.email)
+              isAdmin.current = true;
           }
         }
-
         if (userBelongsInChat) {
-          const domain = "beta.meet.jit.si";
+          const domain = "meet.jit.si";
           const options = {
             roomName: `Team-Meet-${chatid}`,
             // width: "100%",
@@ -133,6 +124,7 @@ const VideoCall = () => {
               startWithVideoMuted: true,
               startWithAudioMuted: true,
               enableWelcomePage: false,
+              apiLogLevels: [],
               prejoinPageEnabled: false,
               disableRemoteMute: false,
               remoteVideoMenu: {
@@ -176,6 +168,13 @@ const VideoCall = () => {
             participantEventListener
           );
           api.current.addListener("participantLeft", participantEventListener);
+          getQuestionsDoc(db, chatid).onSnapshot((doc) => {
+            var question = doc.data();
+            if (question.Valid && !isAdmin.current) {
+              poll.current = `${question.Question}/${question.Option1}/${question.Option2}/${question.Option3}/${question.Option4}`;
+              setShowPoll(true);
+            }
+          });
         } else {
           setError("Sorry! Couldn't determine if you belong in this meeting.");
           setLoading(false);
@@ -188,7 +187,13 @@ const VideoCall = () => {
       });
   }, [chatid, user]);
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {error && (
         <Container className="mt-5 pt-5">
           <Alert variant="danger">{error}</Alert>
@@ -234,13 +239,32 @@ const VideoCall = () => {
                   ></SvgIcon>
                   View Participants
                 </Dropdown.Item>
-                <Dropdown.Item as="button" onClick={downloadAttendance}>
-                  <SvgIcon
-                    component={GetAppIcon}
-                    style={{ color: "white" }}
-                  ></SvgIcon>
-                  Download Attendance List
-                </Dropdown.Item>
+                {isAdmin.current && (
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => {
+                      downloadAttendance(api.current.getParticipantsInfo());
+                    }}
+                  >
+                    <SvgIcon
+                      component={GetAppIcon}
+                      style={{ color: "white" }}
+                    ></SvgIcon>
+                    Download Attendance List
+                  </Dropdown.Item>
+                )}
+                {isAdmin.current && (
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => setShowAdminPoll(true)}
+                  >
+                    <SvgIcon
+                      component={PollIcon}
+                      style={{ color: "white" }}
+                    ></SvgIcon>
+                    Create Poll
+                  </Dropdown.Item>
+                )}
               </Dropdown.Menu>
             </Dropdown>
             <button className="icon-link " onClick={muteHandler}>
@@ -324,15 +348,38 @@ const VideoCall = () => {
         )}
         <div id="video-call" style={{ flex: 4 }}></div>
       </div>
-      <ParticipantsModal
-        show={showParticipants}
-        onHide={() => setShowParticipants(false)}
-        kickParticipant={kickParticipant}
-        pinParticipant={pinParticipant}
-        participantsList={participantsList}
-        muteAll={() => api.current.executeCommand("muteEveryone")}
-      />
-      {loading && <h1>Loading...</h1>}
+      {showParticipants && (
+        <ParticipantsModal
+          onHide={() => setShowParticipants(false)}
+          kickParticipant={kickParticipant}
+          pinParticipant={pinParticipant}
+          participantsList={participantsList}
+          muteAll={() => api.current.executeCommand("muteEveryone")}
+          isAdmin={isAdmin.current}
+        />
+      )}
+      {loading && (
+        <center>
+          <div class="lds-facebook">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </center>
+      )}
+      {isAdmin.current && showAdminPoll && (
+        <PollAdmin
+          chatid={chatid}
+          handleClose={() => setShowAdminPoll(false)}
+        />
+      )}
+      {!isAdmin.current && showPoll && (
+        <AnswerPoll
+          chatid={chatid}
+          poll={poll.current}
+          handleClose={() => setShowPoll(false)}
+        />
+      )}
     </div>
   );
 };

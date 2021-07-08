@@ -208,3 +208,76 @@
   background-color: rgba(0, 0, 0, 0.25);
   border-radius: 10px;
 }
+
+.lds-facebook {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-facebook div {
+  display: inline-block;
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: #464eb8;
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.lds-facebook div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+.lds-facebook div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+.lds-facebook div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0;
+}
+@keyframes lds-facebook {
+  0% {
+    top: 8px;
+    height: 64px;
+  }
+  50%,
+  100% {
+    top: 24px;
+    height: 32px;
+  }
+}
+
+.poll-option {
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.poll-option:hover {
+  background-color: #b1b4e2;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.poll-option-select {
+  background-color: #b1b4e2;
+}
+
+.download-result-button {
+  background-color: #464eb8 !important;
+  color: white !important;
+}
+
+.option-tile {
+  flex: 1;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: #b1b4e2;
+  border-radius: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.option-tile-title {
+  font-weight: bold;
+  font-size: 1.2em;
+}

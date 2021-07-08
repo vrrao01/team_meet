@@ -8,7 +8,7 @@ import Alert from "react-bootstrap/Alert";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 import logo from "../Logo.svg";
-import "firebase/app";
+import firebase from "firebase/app";
 import { auth } from "../firebase";
 import { Link } from "react-router-dom";
 
@@ -33,6 +33,21 @@ export default function Login() {
       }
       setDisabled(false);
     }
+  };
+
+  const googleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      setError("");
+      setDisabled(true);
+      var result = await auth.signInWithPopup(
+        new firebase.auth.GoogleAuthProvider()
+      );
+      console.log("Google SignIN successful, result = ", result);
+    } catch (e) {
+      setError("Google Authentication failed");
+    }
+    setDisabled(false);
   };
   return (
     <Container style={{ display: "flex", height: "100vh" }}>
@@ -86,6 +101,27 @@ export default function Login() {
           </Form>
           <hr />
           Don't Have an Account? <Link to="/register">Sign Up</Link>
+          <div
+            style={{
+              backgroundColor: "#464EB8",
+              color: "white",
+              width: "auto",
+              justifyContent: "space-evenly",
+            }}
+            type="submit"
+            className="btn d-flex flex-row mx-5 mt-2"
+            onClick={googleSignIn}
+            disabled={disabled}
+          >
+            <div>
+              <img
+                alt="Google Logo"
+                src="https://cdn.iconscout.com/icon/free/png-256/google-152-189813.png"
+                style={{ maxWidth: "25px" }}
+              />
+            </div>
+            <div>Sign In with Google</div>
+          </div>
         </Card.Body>
       </Card>
     </Container>
