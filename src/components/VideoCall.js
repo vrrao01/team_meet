@@ -28,6 +28,7 @@ import { db } from "../firebase";
 import { getQuestionsDoc } from "../modules/database";
 import { downloadAttendance } from "../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
+import { getOptions } from "../modules/jitis";
 
 const VideoCall = () => {
   const api = useRef();
@@ -118,35 +119,7 @@ const VideoCall = () => {
         if (userBelongsInChat) {
           const domain = "meet.jit.si";
           const options = {
-            roomName: `Team-Meet-${chatid}`,
-            // width: "100%",
-            // height: "100%",
-            parentNode: document.querySelector("#video-call"),
-            userInfo: {
-              displayName: user.email,
-            },
-            configOverwrite: {
-              doNotStoreRoom: true,
-              startWithVideoMuted: true,
-              startWithAudioMuted: true,
-              enableWelcomePage: false,
-              apiLogLevels: [],
-              prejoinPageEnabled: false,
-              disableRemoteMute: false,
-              remoteVideoMenu: {
-                disableKick: true,
-              },
-              hideParticipantsStats: false,
-              disableShowMoreStats: true,
-              enableSaveLogs: false,
-              disableLocalVideoFlip: true,
-              enableDisplayNameInStats: false,
-            },
-            interfaceConfigOverwrite: {
-              APP_NAME: "Team Meet",
-              TOOLBAR_BUTTONS: [],
-              DEFAULT_BACKGROUND: "#c3c3c7",
-            },
+            ...getOptions(chatid, user.email),
             onload: () => onLoad(title),
           };
           api.current = new window.JitsiMeetExternalAPI(domain, options);
