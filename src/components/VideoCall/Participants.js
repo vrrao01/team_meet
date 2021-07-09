@@ -5,8 +5,12 @@ import RoomIcon from "@material-ui/icons/Room";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 import MicOffIcon from "@material-ui/icons/MicOff";
 
+/**
+ * Displays list of participants in video call
+ * @param {bool} props.isAdmin True if current user is group admin
+ * @param {function} props.onHide Callback when component is closed
+ */
 const ParticipantsModal = (props) => {
-  console.log("participant props = ", props);
   let numberedList = [];
   numberedList = props.participantsList.map((part) => (
     <div

@@ -6,42 +6,50 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../App.css";
-import logo from "../Logo.svg";
-import "firebase/app";
-import { auth } from "../firebase";
+import "../../App.css";
+import logo from "../../Logo.svg";
+import firebase from "firebase/app";
+import { auth } from "../../firebase";
 import { Link } from "react-router-dom";
 
-export default function Register() {
+export default function Login() {
+  // State Variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
 
+  // Login using email and password
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setDisabled(true);
-    if (password2 !== password) {
-      setError("Passwords don't match");
-    } else {
-      try {
-        await auth.createUserWithEmailAndPassword(email, password);
-        setDisabled(false);
-      } catch (err) {
-        console.log(err);
-        if (err.code === "auth/invalid-email") {
-          setError("Enter a valid email");
-        } else if (err.code === "auth/email-already-in-use") {
-          setError("Email is already in use");
-        } else if (err.code === "auth/weak-password") {
-          setError(err.message);
-        } else {
-          setError("Could not create user. Try again");
-        }
-        setDisabled(false);
+    try {
+      setError("");
+      setDisabled(true);
+      await auth.signInWithEmailAndPassword(email, password);
+      console.log("Logged in ");
+    } catch (err) {
+      if (err.code === "auth/invalid-email") {
+        setError("Enter a valid email");
+      } else {
+        setError("Invalid credentials");
       }
+      setDisabled(false);
+    }
+  };
+
+  // Google Sign In
+  const googleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      setError("");
+      setDisabled(true);
+      var result = await auth.signInWithPopup(
+        new firebase.auth.GoogleAuthProvider()
+      );
+      console.log("Google SignIN successful, result = ", result);
+    } catch (e) {
+      setError("Google Authentication failed");
+      setDisabled(false);
     }
   };
   return (
@@ -61,7 +69,7 @@ export default function Register() {
             alt="Team meeT"
           />
           <Card.Title>
-            <h3>Sign Up</h3>
+            <h3>Sign In</h3>
           </Card.Title>
           {error && (
             <Alert className="mt-3" variant="danger">
@@ -69,7 +77,7 @@ export default function Register() {
             </Alert>
           )}
           <Form>
-            <Form.Group className="my-3">
+            <Form.Group className="my-3" controlId="email">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
@@ -77,20 +85,12 @@ export default function Register() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Re-enter password"
-                onChange={(e) => setPassword2(e.target.value)}
               />
             </Form.Group>
             <Button
@@ -103,7 +103,28 @@ export default function Register() {
             </Button>
           </Form>
           <hr />
-          Already have an Account? <Link to="/">Log In</Link>
+          Don't Have an Account? <Link to="/register">Sign Up</Link>
+          <div
+            style={{
+              backgroundColor: "#464EB8",
+              color: "white",
+              width: "auto",
+              justifyContent: "space-evenly",
+            }}
+            type="submit"
+            className="btn d-flex flex-row mx-5 mt-2"
+            onClick={googleSignIn}
+            disabled={disabled}
+          >
+            <div>
+              <img
+                alt="Google Logo"
+                src="https://cdn.iconscout.com/icon/free/png-256/google-152-189813.png"
+                style={{ maxWidth: "25px" }}
+              />
+            </div>
+            <div>Sign In with Google</div>
+          </div>
         </Card.Body>
       </Card>
     </Container>

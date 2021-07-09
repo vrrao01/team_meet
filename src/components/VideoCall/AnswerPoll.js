@@ -3,10 +3,16 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { setAnswer } from "../modules/database";
-import { useAuth } from "../contexts/AuthContext";
-import { db } from "../firebase";
+import { setAnswer } from "../../modules/database";
+import { useAuth } from "../../contexts/AuthContext";
+import { db } from "../../firebase";
 
+/**
+ * Allows non-admins to answer a poll question and saves to database
+ * @param {string} props.poll Question and options separted by /
+ * @param {number} props.chatid ChatID of current meeting
+ * @param {function} props.handleClose Callback to fire once poll is answered
+ */
 const AnswerPoll = (props) => {
   const { user } = useAuth();
   let splitPoll = props.poll.split("/");

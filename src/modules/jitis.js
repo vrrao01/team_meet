@@ -1,8 +1,12 @@
+/**
+ * Default options for Jitsi Meet API
+ * @param {number} chatid ChatID of current meeting used in meeting title
+ * @param {string} email Email of current participant
+ * @returns
+ */
 const getOptions = (chatid, email) => {
   let options = {
     roomName: `Team-Meet-Video-Call-${chatid}`,
-    // width: "100%",
-    // height: "100%",
     parentNode: document.querySelector("#video-call"),
     userInfo: {
       displayName: email,

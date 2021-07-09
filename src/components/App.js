@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
-import Login from "./Login";
+import Login from "./Authentication/Login";
 import { AuthProvider } from "../contexts/AuthContext";
-import Chats from "./Chats";
-import Register from "./Register";
-import PrivateRoute from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
-import VideoCall from "./VideoCall";
+import Chats from "./Homepage/Chats";
+import Register from "./Authentication/Register";
+import PrivateRoute from "./Routers/PrivateRoute";
+import PublicRoute from "./Routers/PublicRoute";
+import VideoCall from "./VideoCall/VideoCall";
 
 function App() {
   return (

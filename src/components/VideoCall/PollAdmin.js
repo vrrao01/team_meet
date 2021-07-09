@@ -5,20 +5,27 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import { getQuestionsDoc, setQuestion } from "../modules/database";
-import { db } from "../firebase";
+import { getQuestionsDoc, setQuestion } from "../../modules/database";
+import { db } from "../../firebase";
 import PollResults from "./PollResults";
 
+/**
+ * Allows admin to post a poll question for all participants
+ */
 const PollAdmin = (props) => {
+  // References to DOM Input elements
   const question = createRef();
   const option1 = createRef();
   const option2 = createRef();
   const option3 = createRef();
   const option4 = createRef();
+
+  // State variables
   const [result, setResult] = useState(false);
   const [questionDetails, setQuestionDetails] = useState({});
   const [options, setOptions] = useState([]);
 
+  // Saves question to database
   const submitQuestion = () => {
     let q = {
       Valid: true,
@@ -35,6 +42,7 @@ const PollAdmin = (props) => {
     setResult(true);
   };
 
+  // Updates database to signify end of poll
   const handleEndPoll = () => {
     getQuestionsDoc(db, props.chatid).update({ Valid: false });
     props.handleClose();

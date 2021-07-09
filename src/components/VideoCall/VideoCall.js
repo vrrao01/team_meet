@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -24,18 +24,22 @@ import axios from "axios";
 import VideoCallChat from "./VideoCallChat";
 import PollAdmin from "./PollAdmin";
 import AnswerPoll from "./AnswerPoll";
-import { db } from "../firebase";
-import { getQuestionsDoc } from "../modules/database";
-import { downloadAttendance } from "../modules/csv";
+import { db } from "../../firebase";
+import { getQuestionsDoc } from "../../modules/database";
+import { downloadAttendance } from "../../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
-import { getOptions } from "../modules/jitis";
+import { getOptions } from "../../modules/jitis";
 
 const VideoCall = () => {
+  // Reference to Jitsi External API
   const api = useRef();
+
+  // Additional information variables
   const { chatid } = useParams();
   const { user } = useAuth();
   var isAdmin = useRef(false);
   var poll = useRef();
+  var chatAccessKey = useRef();
 
   // State variables
   const [loading, setLoading] = useState(true);
@@ -48,9 +52,9 @@ const VideoCall = () => {
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
   const [popUpError, setPopUpError] = useState("");
-
   const [showAdminPoll, setShowAdminPoll] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
+
   // Event Handlers
   const onLoad = async (title) => {
     api.current.executeCommand("subject", title);
@@ -85,6 +89,7 @@ const VideoCall = () => {
   const participantEventListener = () => {
     setParticipantsList(api.current.getParticipantsInfo());
   };
+
   useEffect(() => {
     // Variables to help authenticate user
     var myChats = [];
@@ -106,14 +111,13 @@ const VideoCall = () => {
       .then((response) => {
         myChats = response.data;
         myChatIDs = myChats.map((obj) => obj.id);
-        // console.log("Mychats = ", myChats);
-        // console.log("mychatids =", myChatIDs);
         for (const idx in myChatIDs) {
           if (myChatIDs[idx] === Number.parseInt(chatid)) {
             userBelongsInChat = true;
             title = `${myChats[idx].title}`;
             if (myChats[idx].admin.username === user.email)
               isAdmin.current = true;
+            chatAccessKey.current = myChats[idx]["access_key"];
           }
         }
         if (userBelongsInChat) {
@@ -122,6 +126,8 @@ const VideoCall = () => {
             ...getOptions(chatid, user.email),
             onload: () => onLoad(title),
           };
+
+          // Add event listeners
           api.current = new window.JitsiMeetExternalAPI(domain, options);
           api.current.addListener("audioMuteStatusChanged", (e) => {
             setMicIcon(!e.muted);
@@ -164,6 +170,7 @@ const VideoCall = () => {
         setLoading(false);
       });
   }, [chatid, user]);
+
   return (
     <div
       style={{
@@ -277,7 +284,10 @@ const VideoCall = () => {
                 border: "none",
               }}
               className="icon-link "
-              onClick={() => window.close()}
+              onClick={() => {
+                window.open("", "_parent", "");
+                window.close();
+              }}
             >
               <SvgIcon component={CallEndIcon} style={{ color: "white" }} />
             </button>
@@ -303,7 +313,11 @@ const VideoCall = () => {
               flex: "2",
             }}
           >
-            <VideoCallChat email={user.email} uid={user.uid} chatid={chatid} />
+            <VideoCallChat
+              email={user.email}
+              chatAccessKey={chatAccessKey.current}
+              chatid={chatid}
+            />
           </div>
         )}
         <div id="video-call" style={{ flex: 4 }}></div>

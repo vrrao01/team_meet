@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Navbar, Container } from "react-bootstrap";
-import whiteLogo from "../logoLineWhite.png";
+import whiteLogo from "../../logoLineWhite.png";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import { auth } from "../firebase";
-import "../App.css";
+import { auth } from "../../firebase";
+import "../../App.css";
 import { ChatEngineWrapper, ChatEngine } from "react-chat-engine";
 import axios from "axios";
 import MyChatCard from "./MyChatCard";
@@ -14,6 +14,8 @@ import MyChatHeader from "./MyChatHeader";
 function Chats() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+
+  // Logout user from session
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -22,6 +24,11 @@ function Chats() {
       console.log(err);
     }
   };
+
+  /**
+   * Checks if Firebase user exits on ChatEngine
+   * If not, creates an account for the user on ChatEngine
+   */
   useEffect(() => {
     axios
       .get("https://api.chatengine.io/users/me", {
@@ -47,6 +54,7 @@ function Chats() {
           .catch((err) => console.log("chat screen error = ", err));
       });
   }, [user]);
+
   return (
     <div className="chat-screen">
       <Navbar bg="dark" variant="dark">
