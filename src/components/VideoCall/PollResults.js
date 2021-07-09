@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import Container from "react-bootstrap/Container";
-import { downloadResults } from "../modules/csv";
+import { downloadResults } from "../../modules/csv";
 
 const PollResults = (props) => {
   const [stats, setStats] = useState([]);

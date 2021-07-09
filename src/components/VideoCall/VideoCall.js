@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -24,11 +24,11 @@ import axios from "axios";
 import VideoCallChat from "./VideoCallChat";
 import PollAdmin from "./PollAdmin";
 import AnswerPoll from "./AnswerPoll";
-import { db } from "../firebase";
-import { getQuestionsDoc } from "../modules/database";
-import { downloadAttendance } from "../modules/csv";
+import { db } from "../../firebase";
+import { getQuestionsDoc } from "../../modules/database";
+import { downloadAttendance } from "../../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
-import { getOptions } from "../modules/jitis";
+import { getOptions } from "../../modules/jitis";
 
 const VideoCall = () => {
   const api = useRef();

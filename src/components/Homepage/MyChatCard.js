@@ -1,6 +1,6 @@
 import { ChatEngineContext } from "react-chat-engine";
 import React, { useContext } from "react";
-import "../App.css";
+import "../../App.css";
 import Brightness1Icon from "@material-ui/icons/Brightness1";
 import SvgIcon from "@material-ui/core/SvgIcon";
 

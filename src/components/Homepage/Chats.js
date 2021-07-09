@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Navbar, Container } from "react-bootstrap";
-import whiteLogo from "../logoLineWhite.png";
+import whiteLogo from "../../logoLineWhite.png";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import { auth } from "../firebase";
-import "../App.css";
+import { auth } from "../../firebase";
+import "../../App.css";
 import { ChatEngineWrapper, ChatEngine } from "react-chat-engine";
 import axios from "axios";
 import MyChatCard from "./MyChatCard";
