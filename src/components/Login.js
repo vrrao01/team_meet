@@ -46,8 +46,8 @@ export default function Login() {
       console.log("Google SignIN successful, result = ", result);
     } catch (e) {
       setError("Google Authentication failed");
+      setDisabled(false);
     }
-    setDisabled(false);
   };
   return (
     <Container style={{ display: "flex", height: "100vh" }}>

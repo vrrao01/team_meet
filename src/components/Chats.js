@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Navbar, Container } from "react-bootstrap";
 import whiteLogo from "../logoLineWhite.png";
@@ -13,6 +13,7 @@ import MyChatHeader from "./MyChatHeader";
 
 function Chats() {
   const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -25,11 +26,12 @@ function Chats() {
     axios
       .get("https://api.chatengine.io/users/me", {
         headers: {
-          "project-id": process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID,
-          "user-name": user.email,
-          "user-secret": user.uid,
+          "Project-ID": process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID,
+          "User-Name": user.email,
+          "User-Secret": user.uid,
         },
       })
+      .then(() => setLoading(false))
       .catch(() => {
         let userForm = new FormData();
         userForm.append("email", user.email);
@@ -38,12 +40,13 @@ function Chats() {
         axios
           .post("https://api.chatengine.io/users", userForm, {
             headers: {
-              "private-key": process.env.REACT_APP_CHAT_ENGINE_PRIVATE_KEY,
+              "PRIVATE-KEY": process.env.REACT_APP_CHAT_ENGINE_PRIVATE_KEY,
             },
           })
-          .catch((err) => console.log(err));
+          .then(() => setLoading(false))
+          .catch((err) => console.log("chat screen error = ", err));
       });
-  });
+  }, [user]);
   return (
     <div className="chat-screen">
       <Navbar bg="dark" variant="dark">
@@ -68,18 +71,20 @@ function Chats() {
         </Container>
       </Navbar>
       <Container fluid style={{ fontFamily: "Rubik" }}>
-        <ChatEngineWrapper>
-          <ChatEngine
-            height="calc(100vh - 60px)"
-            projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
-            userName={user.email}
-            userSecret={user.uid}
-            renderChatCard={(chat, index) => (
-              <MyChatCard key={`${index}`} chat={chat} />
-            )}
-            renderChatHeader={(chat) => <MyChatHeader chat={chat} />}
-          />
-        </ChatEngineWrapper>
+        {!loading && (
+          <ChatEngineWrapper>
+            <ChatEngine
+              height="calc(100vh - 60px)"
+              projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
+              userName={user.email}
+              userSecret={user.uid}
+              renderChatCard={(chat, index) => (
+                <MyChatCard key={`${index}`} chat={chat} />
+              )}
+              renderChatHeader={(chat) => <MyChatHeader chat={chat} />}
+            />
+          </ChatEngineWrapper>
+        )}
       </Container>
     </div>
   );

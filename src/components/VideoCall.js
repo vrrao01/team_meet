@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "react-bootstrap/Navbar";
@@ -380,6 +379,7 @@ const VideoCall = () => {
           handleClose={() => setShowPoll(false)}
         />
       )}
+      <div style={{ position: "absolute" }}>Error </div>
     </div>
   );
 };
