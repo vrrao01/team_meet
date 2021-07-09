@@ -46,6 +46,7 @@ const VideoCall = () => {
   const [participantsList, setParticipantsList] = useState([]);
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
+  const [popUpError, setPopUpError] = useState("");
 
   const [showAdminPoll, setShowAdminPoll] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
@@ -64,6 +65,12 @@ const VideoCall = () => {
   };
   const screenShareHandler = () => {
     api.current.executeCommand("toggleShareScreen");
+    if (!screenShareIcon) {
+      setPopUpError(
+        "If you are unable to screen share, click on the center of the screen & try again."
+      );
+      setTimeout(() => setPopUpError(""), 3000);
+    }
   };
   const raiseHand = () => {
     api.current.executeCommand("toggleRaiseHand");
@@ -169,7 +176,7 @@ const VideoCall = () => {
           api.current.addListener("participantLeft", participantEventListener);
           getQuestionsDoc(db, chatid).onSnapshot((doc) => {
             var question = doc.data();
-            if (question.Valid && !isAdmin.current) {
+            if (question && question.Valid && !isAdmin.current) {
               poll.current = `${question.Question}/${question.Option1}/${question.Option2}/${question.Option3}/${question.Option4}`;
               setShowPoll(true);
             }
@@ -379,7 +386,9 @@ const VideoCall = () => {
           handleClose={() => setShowPoll(false)}
         />
       )}
-      <div style={{ position: "absolute" }}>Error </div>
+      <div className="pop-up-error">
+        {popUpError && <Alert variant="info">{popUpError}</Alert>}
+      </div>
     </div>
   );
 };
