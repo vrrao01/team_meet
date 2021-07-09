@@ -3,9 +3,15 @@ import { db } from "../../firebase";
 import Container from "react-bootstrap/Container";
 import { downloadResults } from "../../modules/csv";
 
+/**
+ * Listens for participants' poll answers and displays a count
+ * @param {Array} props.options List of options to current poll question
+ * @param {string} props.question Ongoing poll question
+ */
 const PollResults = (props) => {
   const [stats, setStats] = useState([]);
 
+  // Listens to database for new answers
   useEffect(() => {
     let unsubscribe = db
       .collection(props.chatid)
@@ -22,28 +28,26 @@ const PollResults = (props) => {
       });
     return unsubscribe;
   }, [props]);
+
+  let optionTiles = [];
+  for (let i = 1; i <= 4; i++)
+    optionTiles.push(
+      <div className="option-tile d-flex flex-column">
+        <div className="option-tile-title">{`Option ${i}`}</div>
+        <div>{stats.filter((o) => o.option === i).length}</div>
+      </div>
+    );
+
   return (
     <div>
       <Container>
         <div className="d-flex flex-row">
-          <div className="option-tile d-flex flex-column">
-            <div className="option-tile-title">Option 1</div>
-            <div>{stats.filter((o) => o.option === 1).length}</div>
-          </div>
-          <div className="option-tile d-flex flex-column">
-            <div className="option-tile-title">Option 2</div>
-            <div>{stats.filter((o) => o.option === 2).length}</div>
-          </div>
+          {optionTiles[0]}
+          {optionTiles[1]}
         </div>
         <div className="d-flex flex-row">
-          <div className="option-tile d-flex flex-column">
-            <div className="option-tile-title">Option 3</div>
-            <div>{stats.filter((o) => o.option === 3).length}</div>
-          </div>
-          <div className="option-tile d-flex flex-column">
-            <div className="option-tile-title">Option 4</div>
-            <div>{stats.filter((o) => o.option === 4).length}</div>
-          </div>
+          {optionTiles[2]}
+          {optionTiles[3]}
         </div>
         <div className="text-center">
           <button

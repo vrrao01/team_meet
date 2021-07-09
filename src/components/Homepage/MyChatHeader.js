@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
 
+/**
+ * Custom Header for each chat with an additional button to
+ * start a meeting.
+ * @param {object} props.chat Contains chat details eg: title
+ */
 const MyChatHeader = (props) => {
   let chat = props.chat;
   var title = chat ? chat.title : "";
@@ -44,6 +49,8 @@ const MyChatHeader = (props) => {
       </Container>
     );
   }
+
+  // Return spinner if chat hasn't been fetched
   return (
     <Container className="text-center">
       <Spinner animation="border" variant="primary" className="my-3" />

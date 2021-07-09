@@ -13,11 +13,13 @@ import { auth } from "../../firebase";
 import { Link } from "react-router-dom";
 
 export default function Login() {
+  // State Variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
 
+  // Login using email and password
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -35,6 +37,7 @@ export default function Login() {
     }
   };
 
+  // Google Sign In
   const googleSignIn = async (e) => {
     e.preventDefault();
     try {

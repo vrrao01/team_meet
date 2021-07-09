@@ -1,3 +1,7 @@
+/**
+ * Function that downloads a CSV file of participants in meeting
+ * @param {object} data List of participant emails
+ */
 const downloadAttendance = (data) => {
   let emails = ["email"];
   data.map((obj) => {
@@ -18,6 +22,12 @@ const downloadAttendance = (data) => {
   document.body.removeChild(a);
 };
 
+/**
+ * Function that download a CSV file with poll results
+ * @param {Array} data Contains objects with choices of each participant
+ * @param {string} question Poll question
+ * @param {Array} option Choices for poll question
+ */
 const downloadResults = (data, options, question) => {
   let formattedData = data.map(
     (obj) => `${obj.email},${options[obj.option - 1]}`

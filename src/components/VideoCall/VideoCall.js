@@ -31,7 +31,10 @@ import PollIcon from "@material-ui/icons/Poll";
 import { getOptions } from "../../modules/jitis";
 
 const VideoCall = () => {
+  // Reference to Jitsi External API
   const api = useRef();
+
+  // Additional information variables
   const { chatid } = useParams();
   const { user } = useAuth();
   var isAdmin = useRef(false);
@@ -49,9 +52,9 @@ const VideoCall = () => {
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
   const [popUpError, setPopUpError] = useState("");
-
   const [showAdminPoll, setShowAdminPoll] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
+
   // Event Handlers
   const onLoad = async (title) => {
     api.current.executeCommand("subject", title);
@@ -86,6 +89,7 @@ const VideoCall = () => {
   const participantEventListener = () => {
     setParticipantsList(api.current.getParticipantsInfo());
   };
+
   useEffect(() => {
     // Variables to help authenticate user
     var myChats = [];
@@ -107,8 +111,6 @@ const VideoCall = () => {
       .then((response) => {
         myChats = response.data;
         myChatIDs = myChats.map((obj) => obj.id);
-        // console.log("Mychats = ", myChats);
-        // console.log("mychatids =", myChatIDs);
         for (const idx in myChatIDs) {
           if (myChatIDs[idx] === Number.parseInt(chatid)) {
             userBelongsInChat = true;
@@ -124,6 +126,8 @@ const VideoCall = () => {
             ...getOptions(chatid, user.email),
             onload: () => onLoad(title),
           };
+
+          // Add event listeners
           api.current = new window.JitsiMeetExternalAPI(domain, options);
           api.current.addListener("audioMuteStatusChanged", (e) => {
             setMicIcon(!e.muted);
@@ -166,6 +170,7 @@ const VideoCall = () => {
         setLoading(false);
       });
   }, [chatid, user]);
+
   return (
     <div
       style={{

@@ -13,12 +13,14 @@ import { auth } from "../../firebase";
 import { Link } from "react-router-dom";
 
 export default function Register() {
+  // State variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
 
+  // Create new user on Firebase
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -44,6 +46,7 @@ export default function Register() {
       }
     }
   };
+
   return (
     <Container style={{ display: "flex", height: "100vh" }}>
       <div className="animated-body" />

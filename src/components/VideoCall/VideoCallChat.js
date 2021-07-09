@@ -1,6 +1,11 @@
 import React from "react";
 import { ChatEngineWrapper, ChatSocket, ChatFeed } from "react-chat-engine";
 
+/**
+ * Allows user to continue previous chat conversations during video call
+ * First connects to the ChatEngine websocket and then displays chats
+ * @param {number} props.chatAccessKey Chat Engine provided secret key to access chat
+ */
 const VideoCallChat = (props) => {
   console.log("props = ", props);
   return (

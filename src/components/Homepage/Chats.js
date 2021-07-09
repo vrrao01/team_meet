@@ -14,6 +14,8 @@ import MyChatHeader from "./MyChatHeader";
 function Chats() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+
+  // Logout user from session
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -22,6 +24,11 @@ function Chats() {
       console.log(err);
     }
   };
+
+  /**
+   * Checks if Firebase user exits on ChatEngine
+   * If not, creates an account for the user on ChatEngine
+   */
   useEffect(() => {
     axios
       .get("https://api.chatengine.io/users/me", {
@@ -47,6 +54,7 @@ function Chats() {
           .catch((err) => console.log("chat screen error = ", err));
       });
   }, [user]);
+
   return (
     <div className="chat-screen">
       <Navbar bg="dark" variant="dark">

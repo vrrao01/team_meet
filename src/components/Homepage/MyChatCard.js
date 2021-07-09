@@ -7,6 +7,11 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 var _require = require("html-to-text"),
   htmlToText = _require.htmlToText;
 
+/**
+ * Custom chat card to display on homescreen.
+ * Shows chat title, last message, date sent and unread status.
+ * @param {object} props.chat Details of chat eg: title,sender,etc.
+ */
 const MyChatCard = (props) => {
   var chat = props.chat;
   const { conn, activeChat, setActiveChat } = useContext(ChatEngineContext);
