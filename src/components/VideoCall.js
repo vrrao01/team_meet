@@ -141,7 +141,6 @@ const VideoCall = () => {
               enableSaveLogs: false,
               disableLocalVideoFlip: true,
               enableDisplayNameInStats: false,
-              // notifications: ["notify.disconnected", "notify.raisedHand"],
             },
             interfaceConfigOverwrite: {
               APP_NAME: "Team Meet",
@@ -214,10 +213,7 @@ const VideoCall = () => {
                 className="icon-link"
                 variant=""
               >
-                <SvgIcon
-                  component={MoreHorizIcon}
-                  style={{ color: "white" }}
-                ></SvgIcon>
+                <SvgIcon component={MoreHorizIcon} style={{ color: "white" }} />
               </Dropdown.Toggle>
               <Dropdown.Menu className="dropdown-menu-dark">
                 <Dropdown.Item
@@ -229,7 +225,7 @@ const VideoCall = () => {
                   <SvgIcon
                     component={AccountBoxIcon}
                     style={{ color: "white" }}
-                  ></SvgIcon>
+                  />
                   Virtual Background
                 </Dropdown.Item>
                 <Dropdown.Item
@@ -239,10 +235,7 @@ const VideoCall = () => {
                     setShowParticipants(true);
                   }}
                 >
-                  <SvgIcon
-                    component={PeopleIcon}
-                    style={{ color: "white" }}
-                  ></SvgIcon>
+                  <SvgIcon component={PeopleIcon} style={{ color: "white" }} />
                   View Participants
                 </Dropdown.Item>
                 {isAdmin.current && (
@@ -255,7 +248,7 @@ const VideoCall = () => {
                     <SvgIcon
                       component={GetAppIcon}
                       style={{ color: "white" }}
-                    ></SvgIcon>
+                    />
                     Download Attendance List
                   </Dropdown.Item>
                 )}
@@ -264,10 +257,7 @@ const VideoCall = () => {
                     as="button"
                     onClick={() => setShowAdminPoll(true)}
                   >
-                    <SvgIcon
-                      component={PollIcon}
-                      style={{ color: "white" }}
-                    ></SvgIcon>
+                    <SvgIcon component={PollIcon} style={{ color: "white" }} />
                     Create Poll
                   </Dropdown.Item>
                 )}
@@ -277,38 +267,33 @@ const VideoCall = () => {
               <SvgIcon
                 component={micIcon ? MicIcon : MicOffIcon}
                 style={{ color: "white" }}
-              ></SvgIcon>
+              />
             </button>
-            <button className="icon-link " onClick={() => {}}>
+            <button className="icon-link " onClick={videoHandler}>
               <SvgIcon
                 component={videoIcon ? VideocamIcon : VideocamOffIcon}
                 style={{ color: "white" }}
-                onClick={videoHandler}
-              ></SvgIcon>
+              />
             </button>
-            <button className="icon-link " onClick={() => {}}>
+            <button className="icon-link " onClick={screenShareHandler}>
               <SvgIcon
                 component={
                   screenShareIcon ? StopScreenShareIcon : ScreenShareIcon
                 }
                 style={{ color: "white" }}
-                onClick={screenShareHandler}
-              ></SvgIcon>
+              />
             </button>
             <button className="icon-link " onClick={raiseHand}>
               <SvgIcon
                 component={PanToolIcon}
                 style={{ color: handRaised ? "yellow" : "white" }}
-              ></SvgIcon>
+              />
             </button>
             <button
               className="icon-link "
               onClick={() => setShowChats(!showChats)}
             >
-              <SvgIcon
-                component={ChatIcon}
-                style={{ color: "white" }}
-              ></SvgIcon>
+              <SvgIcon component={ChatIcon} style={{ color: "white" }} />
             </button>
             <button
               style={{
@@ -318,13 +303,10 @@ const VideoCall = () => {
                 borderRadius: "50px",
                 border: "none",
               }}
-              className="icon-link"
+              className="icon-link "
               onClick={() => window.close()}
             >
-              <SvgIcon
-                component={CallEndIcon}
-                style={{ color: "white" }}
-              ></SvgIcon>
+              <SvgIcon component={CallEndIcon} style={{ color: "white" }} />
             </button>
           </Container>
         </Navbar>
@@ -346,7 +328,6 @@ const VideoCall = () => {
               position: "relative",
               marginLeft: "5px",
               flex: "2",
-              backgroundColor: "red",
             }}
           >
             <VideoCallChat email={user.email} uid={user.uid} chatid={chatid} />
