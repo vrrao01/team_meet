@@ -28,6 +28,7 @@ export default function Register() {
     } else {
       try {
         await auth.createUserWithEmailAndPassword(email, password);
+        setDisabled(false);
       } catch (err) {
         console.log(err);
         if (err.code === "auth/invalid-email") {
@@ -39,9 +40,9 @@ export default function Register() {
         } else {
           setError("Could not create user. Try again");
         }
+        setDisabled(false);
       }
     }
-    setDisabled(false);
   };
   return (
     <Container style={{ display: "flex", height: "100vh" }}>

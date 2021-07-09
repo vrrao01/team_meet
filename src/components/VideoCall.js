@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "react-bootstrap/Navbar";
@@ -29,6 +28,7 @@ import { db } from "../firebase";
 import { getQuestionsDoc } from "../modules/database";
 import { downloadAttendance } from "../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
+import { getOptions } from "../modules/jitis";
 
 const VideoCall = () => {
   const api = useRef();
@@ -47,6 +47,7 @@ const VideoCall = () => {
   const [participantsList, setParticipantsList] = useState([]);
   const [error, setError] = useState("");
   const [showChats, setShowChats] = useState(false);
+  const [popUpError, setPopUpError] = useState("");
 
   const [showAdminPoll, setShowAdminPoll] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
@@ -65,6 +66,12 @@ const VideoCall = () => {
   };
   const screenShareHandler = () => {
     api.current.executeCommand("toggleShareScreen");
+    if (!screenShareIcon) {
+      setPopUpError(
+        "If you are unable to screen share, click on the center of the screen & try again."
+      );
+      setTimeout(() => setPopUpError(""), 3000);
+    }
   };
   const raiseHand = () => {
     api.current.executeCommand("toggleRaiseHand");
@@ -112,36 +119,7 @@ const VideoCall = () => {
         if (userBelongsInChat) {
           const domain = "meet.jit.si";
           const options = {
-            roomName: `Team-Meet-${chatid}`,
-            // width: "100%",
-            // height: "100%",
-            parentNode: document.querySelector("#video-call"),
-            userInfo: {
-              displayName: user.email,
-            },
-            configOverwrite: {
-              doNotStoreRoom: true,
-              startWithVideoMuted: true,
-              startWithAudioMuted: true,
-              enableWelcomePage: false,
-              apiLogLevels: [],
-              prejoinPageEnabled: false,
-              disableRemoteMute: false,
-              remoteVideoMenu: {
-                disableKick: true,
-              },
-              hideParticipantsStats: false,
-              disableShowMoreStats: true,
-              enableSaveLogs: false,
-              disableLocalVideoFlip: true,
-              enableDisplayNameInStats: false,
-              // notifications: ["notify.disconnected", "notify.raisedHand"],
-            },
-            interfaceConfigOverwrite: {
-              APP_NAME: "Team Meet",
-              TOOLBAR_BUTTONS: [],
-              DEFAULT_BACKGROUND: "#c3c3c7",
-            },
+            ...getOptions(chatid, user.email),
             onload: () => onLoad(title),
           };
           api.current = new window.JitsiMeetExternalAPI(domain, options);
@@ -170,7 +148,7 @@ const VideoCall = () => {
           api.current.addListener("participantLeft", participantEventListener);
           getQuestionsDoc(db, chatid).onSnapshot((doc) => {
             var question = doc.data();
-            if (question.Valid && !isAdmin.current) {
+            if (question && question.Valid && !isAdmin.current) {
               poll.current = `${question.Question}/${question.Option1}/${question.Option2}/${question.Option3}/${question.Option4}`;
               setShowPoll(true);
             }
@@ -208,10 +186,7 @@ const VideoCall = () => {
                 className="icon-link"
                 variant=""
               >
-                <SvgIcon
-                  component={MoreHorizIcon}
-                  style={{ color: "white" }}
-                ></SvgIcon>
+                <SvgIcon component={MoreHorizIcon} style={{ color: "white" }} />
               </Dropdown.Toggle>
               <Dropdown.Menu className="dropdown-menu-dark">
                 <Dropdown.Item
@@ -223,7 +198,7 @@ const VideoCall = () => {
                   <SvgIcon
                     component={AccountBoxIcon}
                     style={{ color: "white" }}
-                  ></SvgIcon>
+                  />
                   Virtual Background
                 </Dropdown.Item>
                 <Dropdown.Item
@@ -233,10 +208,7 @@ const VideoCall = () => {
                     setShowParticipants(true);
                   }}
                 >
-                  <SvgIcon
-                    component={PeopleIcon}
-                    style={{ color: "white" }}
-                  ></SvgIcon>
+                  <SvgIcon component={PeopleIcon} style={{ color: "white" }} />
                   View Participants
                 </Dropdown.Item>
                 {isAdmin.current && (
@@ -249,7 +221,7 @@ const VideoCall = () => {
                     <SvgIcon
                       component={GetAppIcon}
                       style={{ color: "white" }}
-                    ></SvgIcon>
+                    />
                     Download Attendance List
                   </Dropdown.Item>
                 )}
@@ -258,10 +230,7 @@ const VideoCall = () => {
                     as="button"
                     onClick={() => setShowAdminPoll(true)}
                   >
-                    <SvgIcon
-                      component={PollIcon}
-                      style={{ color: "white" }}
-                    ></SvgIcon>
+                    <SvgIcon component={PollIcon} style={{ color: "white" }} />
                     Create Poll
                   </Dropdown.Item>
                 )}
@@ -271,38 +240,33 @@ const VideoCall = () => {
               <SvgIcon
                 component={micIcon ? MicIcon : MicOffIcon}
                 style={{ color: "white" }}
-              ></SvgIcon>
+              />
             </button>
-            <button className="icon-link " onClick={() => {}}>
+            <button className="icon-link " onClick={videoHandler}>
               <SvgIcon
                 component={videoIcon ? VideocamIcon : VideocamOffIcon}
                 style={{ color: "white" }}
-                onClick={videoHandler}
-              ></SvgIcon>
+              />
             </button>
-            <button className="icon-link " onClick={() => {}}>
+            <button className="icon-link " onClick={screenShareHandler}>
               <SvgIcon
                 component={
                   screenShareIcon ? StopScreenShareIcon : ScreenShareIcon
                 }
                 style={{ color: "white" }}
-                onClick={screenShareHandler}
-              ></SvgIcon>
+              />
             </button>
             <button className="icon-link " onClick={raiseHand}>
               <SvgIcon
                 component={PanToolIcon}
                 style={{ color: handRaised ? "yellow" : "white" }}
-              ></SvgIcon>
+              />
             </button>
             <button
               className="icon-link "
               onClick={() => setShowChats(!showChats)}
             >
-              <SvgIcon
-                component={ChatIcon}
-                style={{ color: "white" }}
-              ></SvgIcon>
+              <SvgIcon component={ChatIcon} style={{ color: "white" }} />
             </button>
             <button
               style={{
@@ -312,13 +276,10 @@ const VideoCall = () => {
                 borderRadius: "50px",
                 border: "none",
               }}
-              className="icon-link"
+              className="icon-link "
               onClick={() => window.close()}
             >
-              <SvgIcon
-                component={CallEndIcon}
-                style={{ color: "white" }}
-              ></SvgIcon>
+              <SvgIcon component={CallEndIcon} style={{ color: "white" }} />
             </button>
           </Container>
         </Navbar>
@@ -340,7 +301,6 @@ const VideoCall = () => {
               position: "relative",
               marginLeft: "5px",
               flex: "2",
-              backgroundColor: "red",
             }}
           >
             <VideoCallChat email={user.email} uid={user.uid} chatid={chatid} />
@@ -380,6 +340,9 @@ const VideoCall = () => {
           handleClose={() => setShowPoll(false)}
         />
       )}
+      <div className="pop-up-error">
+        {popUpError && <Alert variant="info">{popUpError}</Alert>}
+      </div>
     </div>
   );
 };

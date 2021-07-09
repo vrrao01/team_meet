@@ -281,3 +281,14 @@
   font-weight: bold;
   font-size: 1.2em;
 }
+
+.pop-up-error {
+  position: absolute;
+  z-index: 100;
+  width: 100vw;
+  text-align: center;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
