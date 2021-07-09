@@ -1,14 +1,16 @@
 import React from "react";
-import { ChatEngineWrapper, Socket, ChatFeed } from "react-chat-engine";
+import { ChatEngineWrapper, ChatSocket, ChatFeed } from "react-chat-engine";
 
 const VideoCallChat = (props) => {
+  console.log("props = ", props);
   return (
     <div className="video-call-chat" style={{ width: "100%", height: "100%" }}>
       <ChatEngineWrapper>
-        <Socket
+        <ChatSocket
           projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
-          userName={props.email}
-          userSecret={props.uid}
+          chatID={props.chatid}
+          chatAccessKey={props.chatAccessKey}
+          senderUsername={props.email}
         />
 
         <ChatFeed activeChat={props.chatid} />

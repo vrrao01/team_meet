@@ -36,6 +36,7 @@ const VideoCall = () => {
   const { user } = useAuth();
   var isAdmin = useRef(false);
   var poll = useRef();
+  var chatAccessKey = useRef();
 
   // State variables
   const [loading, setLoading] = useState(true);
@@ -114,6 +115,7 @@ const VideoCall = () => {
             title = `${myChats[idx].title}`;
             if (myChats[idx].admin.username === user.email)
               isAdmin.current = true;
+            chatAccessKey.current = myChats[idx]["access_key"];
           }
         }
         if (userBelongsInChat) {
@@ -277,7 +279,10 @@ const VideoCall = () => {
                 border: "none",
               }}
               className="icon-link "
-              onClick={() => window.close()}
+              onClick={() => {
+                window.open("", "_parent", "");
+                window.close();
+              }}
             >
               <SvgIcon component={CallEndIcon} style={{ color: "white" }} />
             </button>
@@ -303,7 +308,11 @@ const VideoCall = () => {
               flex: "2",
             }}
           >
-            <VideoCallChat email={user.email} uid={user.uid} chatid={chatid} />
+            <VideoCallChat
+              email={user.email}
+              chatAccessKey={chatAccessKey.current}
+              chatid={chatid}
+            />
           </div>
         )}
         <div id="video-call" style={{ flex: 4 }}></div>
