@@ -288,3 +288,11 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.ce-message-date-text {
+  color: transparent !important;
+}
+
+.ce-chat-subtitle-text {
+  color: transparent !important;
+}
