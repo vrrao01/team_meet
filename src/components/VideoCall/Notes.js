@@ -8,14 +8,20 @@ import { Form, Container, Row } from "react-bootstrap";
 import { getAllNotes, saveNote } from "../../modules/database";
 import { db } from "../../firebase";
 
+/**
+ * Allows call participants to take notes during a meeting
+ */
 const Notes = (props) => {
+  // State Variables
   const [select, setSelect] = useState(false);
   const [noteID, setNoteID] = useState();
   const [noteBody, setNoteBody] = useState("");
   const [noteTitle, setNoteTitle] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
-  const notes = createRef();
   const [docList, setDocList] = useState();
+
+  // References to note title and body
+  const notes = createRef();
   const titleRef = createRef();
 
   const handleSave = () => {
@@ -36,6 +42,9 @@ const Notes = (props) => {
     }
   };
 
+  /**
+   * Fetches existing notes created by user for editing
+   */
   useEffect(() => {
     getAllNotes(db, props.chatid, props.uid).then((docs) => {
       let list = docs.map((doc) => (
@@ -56,6 +65,7 @@ const Notes = (props) => {
       setDocList(list);
     });
   }, [props]);
+
   return (
     <Container>
       <div className="mt-3 mb-2 d-flex flex-row">

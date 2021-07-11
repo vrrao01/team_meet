@@ -36,6 +36,11 @@ const setQuestion = (database, chatid, question) => {
   doc.set(question);
 };
 
+/**
+ * Returns an array of all the documents associated with a particular pair of <chatid,uid>
+ * @param {string} uid User indentification string provided by Firebase
+ */
+
 const getAllNotes = async (database, chatid, uid) => {
   let qs = await database.collection(chatid).doc("Notes").collection(uid).get();
   let notes = qs.docs.map((doc) => {
@@ -46,6 +51,9 @@ const getAllNotes = async (database, chatid, uid) => {
   return notes;
 };
 
+/**
+ * Saves the note with given title and body
+ */
 const saveNote = async (database, chatid, uid, docid, title, body) => {
   try {
     await database
