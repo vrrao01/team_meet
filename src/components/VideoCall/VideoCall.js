@@ -28,7 +28,7 @@ import { db } from "../../firebase";
 import { getQuestionsDoc } from "../../modules/database";
 import { downloadAttendance } from "../../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
-import { getOptions } from "../../modules/jitis";
+import { getOptions } from "../../modules/jitsi";
 
 const VideoCall = () => {
   // Reference to Jitsi External API
