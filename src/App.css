@@ -296,3 +296,20 @@
 .ce-chat-subtitle-text {
   color: transparent !important;
 }
+
+.note-option {
+  padding: 5px;
+  margin: 5px;
+  background-color: #b1b4e294;
+
+  border-radius: 5px;
+  text-align: left;
+}
+
+.note-option:hover {
+  background-color: #b1b4e2;
+}
+
+.note-option-button {
+  text-align: left;
+}

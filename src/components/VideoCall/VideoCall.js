@@ -9,6 +9,7 @@ import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import VideocamOffIcon from "@material-ui/icons/VideocamOff";
+import MenuBookIcon from "@material-ui/icons/MenuBook";
 import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
 import SvgIcon from "@material-ui/core/SvgIcon";
@@ -29,6 +30,7 @@ import { getQuestionsDoc } from "../../modules/database";
 import { downloadAttendance } from "../../modules/csv";
 import PollIcon from "@material-ui/icons/Poll";
 import { getOptions } from "../../modules/jitsi";
+import Notes from "./Notes";
 
 const VideoCall = () => {
   // Reference to Jitsi External API
@@ -54,6 +56,7 @@ const VideoCall = () => {
   const [popUpError, setPopUpError] = useState("");
   const [showAdminPoll, setShowAdminPoll] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
 
   // Event Handlers
   const onLoad = async (title) => {
@@ -241,6 +244,13 @@ const VideoCall = () => {
                     Create Poll
                   </Dropdown.Item>
                 )}
+                <Dropdown.Item as="button" onClick={() => setShowNotes(true)}>
+                  <SvgIcon
+                    component={MenuBookIcon}
+                    style={{ color: "white" }}
+                  />
+                  Meeting Notes
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <button className="icon-link " onClick={muteHandler}>
@@ -321,6 +331,20 @@ const VideoCall = () => {
           </div>
         )}
         <div id="video-call" style={{ flex: 4 }}></div>
+        {showNotes && (
+          <div
+            style={{
+              width: "25vw",
+              position: "relative",
+            }}
+          >
+            <Notes
+              handleClose={() => setShowNotes(false)}
+              uid={user.uid}
+              chatid={chatid}
+            />
+          </div>
+        )}
       </div>
       {showParticipants && (
         <ParticipantsModal
