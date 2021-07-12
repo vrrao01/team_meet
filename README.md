@@ -1,70 +1,39 @@
-# Getting Started with Create React App
+# <img src="https://team-meet.netlify.app/static/media/Logo.19626df0.svg" alt="Logo" width="200" >
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Brief
 
-## Available Scripts
+Team meeT is a Microsoft Teams clone webapp that allows users to have video calls and group chats. This project was created as a part of Microsoft Engage Mentorship 2021.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+1. User Authentication using Email and Password
+2. Google Sign In
+3. Create group chats
+4. Video call with screenshare and raise hand
+5. Post poll questions during video calls and download results.
+6. Take down meeting notes during video calls
+7. Continue group chats during video call
+8. Admins can mute all participants and remove participants
+9. Download attendance list as CSV
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Techstack used
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. ReactJS
+2. Bootstrap
+3. Jitsi Meet
+4. ChatEngine
+5. Firebase
 
-### `npm test`
+## Agile Methodology
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To uphold the "Be Agile" spirit of Engage 2021, this project was build in a series of agile sprints:
 
-### `npm run build`
+- The first week was spent on desiging the website and enlisting possible features to include. Research was done on the available options. Throughout the first and second sprints, time was devoted to learning ReactJS.
+- Simple prototypes were made using OpenVidu, WebRTC and Jitsi Meet. Jitsi Meet external API was chosen due to easy integration and ability to handle large number of participants with lesser load on browser. A **Kanban style project board** was created on GitHub for the repository. The project board kept track of **Todo, In Progress and Completed** tasks during the sprints.
+- The third week was spent on extending the Jitsi Meet prototype to include other features. Chat Engine was integrated into the app, Firebase was used for authentication and storage and UI of the app was improved. A new feature call **Polls** was added into the video call component. This feature allows admins to post a poll question and download a CSV file with the participants' answers.
+- The fourth week involved incorporating the chat feature into the video call component. Previously, Jitsi Meet chat was used during video calls. This was changed to the group chat to allow users to continue group conversations. A new feature called **Meeting Notes** was incorporated. This feature allows all participants to take down notes during a meeting using a rich text-editor.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### CI/CD
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Continuous Integration** was done using GitHub actions. A NodeJS CI workflow was set up to ensure all pull requests build correctly. Furthermore, 5 additional checks were done by the Netlify bot to ensure that new code deploys correctly.
+**Continuous Deployment** was ensured by setting the main branch of the repository as a the production branch on Netlify. All changes during the sprints were first pushed into the development branch and then merged into the main branch after they pass the CI tests. To ensure that code wasn't inadvertently pushed into the main branch, security rules were laid out on GitHub preventing a direct push.
