@@ -36,4 +36,44 @@ const setQuestion = (database, chatid, question) => {
   doc.set(question);
 };
 
-export { getQuestionsDoc, getAnswersDoc, setAnswer, setQuestion };
+/**
+ * Returns an array of all the documents associated with a particular pair of <chatid,uid>
+ * @param {string} uid User indentification string provided by Firebase
+ */
+
+const getAllNotes = async (database, chatid, uid) => {
+  let qs = await database.collection(chatid).doc("Notes").collection(uid).get();
+  let notes = qs.docs.map((doc) => {
+    let myobj = doc.data();
+    myobj["id"] = doc.id;
+    return myobj;
+  });
+  return notes;
+};
+
+/**
+ * Saves the note with given title and body
+ */
+const saveNote = async (database, chatid, uid, docid, title, body) => {
+  try {
+    await database
+      .collection(chatid)
+      .doc("Notes")
+      .collection(uid)
+      .doc(docid)
+      .set({ title, body });
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export {
+  getQuestionsDoc,
+  getAnswersDoc,
+  setAnswer,
+  setQuestion,
+  getAllNotes,
+  saveNote,
+};

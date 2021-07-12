@@ -32,6 +32,7 @@ const getOptions = (chatid, email) => {
       APP_NAME: "Team Meet",
       TOOLBAR_BUTTONS: [],
       DEFAULT_BACKGROUND: "#c3c3c7",
+      SHOW_CHROME_EXTENSION_BANNER: false,
     },
   };
   return options;
