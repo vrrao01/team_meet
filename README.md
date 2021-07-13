@@ -7,7 +7,7 @@
 This project is deployed on <a href="https://team-meet.netlify.app/">https://team-meet.netlify.app/</a>
 
 ### Project Documentation
-Details on the project design, components and agile sprints can be found <a href="https://drive.google.com/file/d/1OFeHPvbi-gAg2_pnM5HlkDIInj6IVm1C/view?usp=sharing">here</a>
+Details on the project design, components and agile sprints can be found <a href="https://drive.google.com/file/d/13q8OEGOZdKAyCCXZ1rwMP9NCEYepUPC7/view?usp=sharing">here</a>
 
 ## Features
 
