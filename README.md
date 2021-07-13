@@ -1,8 +1,13 @@
-# <img src="https://team-meet.netlify.app/static/media/Logo.19626df0.svg" alt="Logo" width="200" >
+<p align="center"><a href = "https://team-meet.netlify.app/"> <img src="https://team-meet.netlify.app/static/media/Logo.19626df0.svg" alt="Logo" width="200" ></a></p>
 
 ## Brief
 
-Team meeT is a Microsoft Teams clone webapp that allows users to have video calls and group chats. This project was created as a part of Microsoft Engage Mentorship 2021.
+<a href="https://team-meet.netlify.app/">Team meeT</a> is a Microsoft Teams clone webapp that allows users to have video calls and group chats. This project was created as a part of Microsoft Engage Mentorship 2021. 
+### Project Deployment 
+This project is deployed on <a href="https://team-meet.netlify.app/">https://team-meet.netlify.app/</a>
+
+### Project Documentation
+Details on the project design, components and agile sprints can be found <a href="https://drive.google.com/file/d/1OFeHPvbi-gAg2_pnM5HlkDIInj6IVm1C/view?usp=sharing">here</a>
 
 ## Features
 
@@ -36,4 +41,11 @@ To uphold the "Be Agile" spirit of Engage 2021, this project was build in a seri
 ### CI/CD
 
 **Continuous Integration** was done using GitHub actions. A NodeJS CI workflow was set up to ensure all pull requests build correctly. Furthermore, 5 additional checks were done by the Netlify bot to ensure that new code deploys correctly.
+
 **Continuous Deployment** was ensured by setting the main branch of the repository as a the production branch on Netlify. All changes during the sprints were first pushed into the development branch and then merged into the main branch after they pass the CI tests. To ensure that code wasn't inadvertently pushed into the main branch, security rules were laid out on GitHub preventing a direct push.
+
+## Screenshots
+![Login and Chat Dashboard](https://user-images.githubusercontent.com/75874394/125432582-818e433c-3f5c-446f-b730-a4ae6f68f748.gif)
+
+![Video Call and Features](https://user-images.githubusercontent.com/75874394/125432859-61ca2289-e207-421d-98a4-41949cd7bba6.gif)
+
